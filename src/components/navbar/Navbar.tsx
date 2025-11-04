@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import styles from "./style.module.css";
+import { navItems } from "@/data/navItemData";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,24 +19,16 @@ export default function Navbar() {
           Launchly
         </Link>
         <div className="hidden md:flex items-center space-x-8">
-          <Link
-            href="/features"
-            className={`${styles.navLink} text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-          >
-            Features
-          </Link>
-          <Link
-            href="/docs"
-            className={`${styles.navLink} text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-          >
-            Docs
-          </Link>
-          <Link
-            href="/pricing"
-            className={`${styles.navLink} text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-          >
-            Pricing
-          </Link>
+          {navItems.map((item, index) => (
+            <div key={index}>
+              <Link
+                className={`${styles.navLink} text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
+                href={item.href}
+              >
+                {item.name}
+              </Link>
+            </div>
+          ))}
           <Link
             href="/auth/signin"
             className={`${styles.deployButton} ml-4 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition`}
@@ -55,27 +48,16 @@ export default function Navbar() {
         {isOpen && (
           <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 px-6 pb-4 border-t border-gray-200 dark:border-gray-700 shadow-md md:hidden">
             <div className="flex flex-col items-center space-y-4 py-4">
-              <Link
-                href="/features"
-                className={`${styles.navLink} block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-                onClick={() => setIsOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                href="/docs"
-                className={`${styles.navLink} block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-                onClick={() => setIsOpen(false)}
-              >
-                Docs
-              </Link>
-              <Link
-                href="/pricing"
-                className={`${styles.navLink} block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-                onClick={() => setIsOpen(false)}
-              >
-                Pricing
-              </Link>
+              {navItems.map((item, index) => (
+                <div key={index}>
+                  <Link
+                    className={`${styles.navLink} text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
+                    href={item.href}
+                  >
+                    {item.name}
+                  </Link>
+                </div>
+              ))}
               <Link
                 href="/auth/signin"
                 className={`${styles.deployButton} block mt-3 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition`}
