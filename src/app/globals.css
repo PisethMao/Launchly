@@ -3,24 +3,36 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --launchly-primary: #4f46e5;
+  --launchly-secondary: #7c3aed;
+  --launchly-accent: #38bdf8;
 }
 
 :root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-poppins: var(--font-poppins);
+  --font-khmer: var(--font-khmer);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --lauchly-primary: #6366f1;
+    --launchly-secondary: #8b5cf6;
+    --launchly-accent: #38bdf8;
   }
 }
 
+html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), var(--font-khmer), sans-serif;
+  scroll-behavior: smooth;
+}
+* {
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
