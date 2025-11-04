@@ -16,6 +16,10 @@ const notoKhmer = Noto_Sans_Khmer({
 });
 
 export const metadata: Metadata = {
+  metadataBase:
+    process.env.NODE_ENV === "development"
+      ? new URL("http://localhost:3000")
+      : new URL("https://launchly.vercel.app"),
   title: "Launchly - Deploy Websites Automatically wth SSL & Domains",
   description:
     "Launchly lets you deploy websites from GitHub or GitLab in seconds, with automatic SSL and domain setup - all powered by Linux automation.",
