@@ -4,10 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-type ErrorPageProps = {
-  error: Error & { digest?: string };
-  reset?: () => void;
-};
 export default function Error({ error, reset }: ErrorPageProps) {
   const [message, setMessageError] = useState("An unexpected error occurred.");
   useEffect(() => {
