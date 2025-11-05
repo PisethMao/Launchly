@@ -15,23 +15,21 @@
   --font-khmer: var(--font-khmer);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --lauchly-primary: #6366f1;
-    --launchly-secondary: #8b5cf6;
-    --launchly-accent: #38bdf8;
-  }
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --launchly-primary: #6366f1;
+  --launchly-secondary: #8b5cf6;
+  --launchly-accent: #38bdf8;
 }
 
 html,
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-poppins), var(--font-khmer), sans-serif;
-  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 * {
   box-sizing: border-box;
   transition: background-color 0.3s ease, color 0.3s ease;

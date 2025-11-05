@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Noto_Sans_Khmer, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
-
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -57,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${notoKhmer.variable} antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100`}
+        className={`${poppins.variable} ${notoKhmer.variable} antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-500`}
       >
         <Navbar />
         <main className="pt-20 font-sans">{children}</main>
