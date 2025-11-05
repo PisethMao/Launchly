@@ -1,8 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
   return (
     <section className="font-poppins relative flex flex-col-reverse items-center md:flex-row justify-between min-h-[90vh] px-6 md:px-20 overflow-hidden bg-linear-to-b from-(--background) to-(--background) dark:from-gray-950 dark:to-gray-900">
       <motion.div
@@ -23,6 +25,7 @@ export default function HeroSection() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="px-6 py-3 bg-indigo-600 text-white font-semibold shadow-md rounded-xl transition hover:shadow-lg hover:bg-indigo-700 cursor-pointer"
+          onClick={() => router.push('/features')}        
         >
           Get Started
         </motion.button>
