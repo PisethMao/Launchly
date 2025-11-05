@@ -3,6 +3,8 @@ import { Noto_Sans_Khmer, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import Error from "./error";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -57,11 +59,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} ${notoKhmer.variable} antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-500`}
+        className={`${poppins.variable} ${notoKhmer.variable} antialiased bg-white min-h-screen dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-500`}
       >
-        <Navbar />
-        <main className="pt-20 font-sans">{children}</main>
-        <Footer />
+        <ErrorBoundary errorComponent={Error}>
+          <Navbar />
+          <main className="pt-20 font-sans">{children}</main>
+          <Footer />
+        </ErrorBoundary>
       </body>
     </html>
   );
