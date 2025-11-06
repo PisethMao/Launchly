@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Error from "./error";
+import NextAuthProvider from "@/components/providers/NextAuthProvider";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -61,11 +62,13 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${notoKhmer.variable} antialiased bg-white min-h-screen dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-500`}
       >
-        <ErrorBoundary errorComponent={Error}>
-          <Navbar />
-          <main className="pt-20 font-sans">{children}</main>
-          <Footer />
-        </ErrorBoundary>
+        <NextAuthProvider>
+          <ErrorBoundary errorComponent={Error}>
+            <Navbar />
+            <main className="pt-20 font-sans">{children}</main>
+            <Footer />
+          </ErrorBoundary>
+        </NextAuthProvider>
       </body>
     </html>
   );
