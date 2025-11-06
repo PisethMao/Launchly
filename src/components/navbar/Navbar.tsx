@@ -5,6 +5,7 @@ import { useState } from "react";
 import styles from "./style.module.css";
 import { navItems } from "@/data/navItemData";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
+import UserMenu from "./UserMenu";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useThemeToggle();
@@ -30,12 +31,7 @@ export default function Navbar() {
               </Link>
             </div>
           ))}
-          <Link
-            href="/auth/signin"
-            className={`${styles.deployButton} ml-4 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition`}
-          >
-            Deploy Now
-          </Link>
+          <UserMenu />
           <button
             type="button"
             aria-label="Toggle Theme"
@@ -67,13 +63,7 @@ export default function Navbar() {
                   </Link>
                 </div>
               ))}
-              <Link
-                href="/auth/signin"
-                className={`${styles.deployButton} block mt-3 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition`}
-                onClick={() => setIsOpen(false)}
-              >
-                Deploy Now
-              </Link>
+              <UserMenu />
               <button
                 type="button"
                 onClick={toggleTheme}
