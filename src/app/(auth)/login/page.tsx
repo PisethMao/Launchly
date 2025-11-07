@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -16,15 +15,27 @@ export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/user";
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-      callbackUrl,
-    });
+    const storedUser = localStorage.getItem("launchly_user");
+    if (!storedUser) {
+      setLoading(false);
+      alert("⚠️ No account found. Please sign up first.");
+      return;
+    }
+    const user = JSON.parse(storedUser);
+    if (user.email === email && user.password === password) {
+      localStorage.setItem("launchly_auth", "true");
+      localStorage.setItem("launchly_current_user", JSON.stringify(user));
+      setTimeout(() => {
+        setLoading(false);
+        window.location.href = callbackUrl;
+      }, 600);
+    } else {
+      setLoading(false);
+      alert("❌ Incorrect email or password.");
+    }
   };
   return (
     <main className="font-poppins relative flex min-h-[90vh] items-center justify-center px-6">

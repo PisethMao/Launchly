@@ -25,7 +25,7 @@ export default function HeroSection() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="px-6 py-3 bg-indigo-600 text-white font-semibold shadow-md rounded-xl transition hover:shadow-lg hover:bg-indigo-700 cursor-pointer"
-          onClick={() => router.push('/features')}        
+          onClick={() => router.push('/user')}        
         >
           Get Started
         </motion.button>
