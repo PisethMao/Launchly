@@ -6,6 +6,8 @@ import Footer from "@/components/footer/Footer";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Error from "./error";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
+import { Suspense } from "react";
+import Loading from "./loading";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -65,7 +67,9 @@ export default function RootLayout({
         <NextAuthProvider>
           <ErrorBoundary errorComponent={Error}>
             <Navbar />
-            <main className="pt-20 font-sans">{children}</main>
+            <Suspense fallback={<Loading />}>
+              <main className="pt-20 font-sans">{children}</main>
+            </Suspense>
             <Footer />
           </ErrorBoundary>
         </NextAuthProvider>
