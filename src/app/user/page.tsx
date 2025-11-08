@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -52,24 +53,30 @@ export default function page() {
     return null;
   }
   return (
-    <main className="font-poppins max-w-6xl mx-auto px-6 py-10">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
+    <main className="font-poppins max-w-6xl mx-auto px-6 py-12">
+      <motion.header
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12"
+      >
         <div>
-          <h1 className="text-3xl font-bold">Welcome, {user.name}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Plan: <span className="font-medium">{user.plan}</span>
+          <h1 className="text-4xl font-semibold tracking-tight">
+            Welcome, <span className="text-indigo-600">{user.name}</span>
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Current Plan · <span className="font-medium">{user.plan}</span>
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/deploy/new"
-            className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+            className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm hover:shadow-md active:scale-95"
           >
-            New Deployment
+            + New Deployment
           </Link>
           <Link
             href="/billing"
-            className="px-4 py-2 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+            className="px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 transition active:scale-95"
           >
             Billing
           </Link>
@@ -79,27 +86,65 @@ export default function page() {
               localStorage.removeItem("launchly_auth");
               router.push("/");
             }}
-            className="px-4 py-2 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+            className="px-5 py-2.5 cursor-pointer rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 transition active:scale-95"
           >
             Logout
           </button>
         </div>
-      </header>
-      <section className="space-y-4">
+      </motion.header>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-12"
+      >
+        <div className="p-5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-sm hover:shadow-md transition">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Total Deployments
+          </p>
+          <h3 className="text-2xl font-semibold mt-1">
+            {deployments.length}
+          </h3>
+        </div>
+        <div className="p-5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-sm hover:shadow-md transition">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Active Builds
+          </p>
+          <h3 className="text-2xl font-semibold mt-1">
+            {deployments.filter((d) => d.status === "Building").length}
+          </h3>
+        </div>
+        <div className="p-5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-sm hover:shadow-md transition">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Healthy Sites
+          </p>
+          <h3 className="text-2xl font-semibold mt-1">
+            {deployments.filter((d) => d.status === "Healthy").length}
+          </h3>
+        </div>
+      </motion.div>
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="space-y-4"
+      >
         <h2 className="text-xl font-semibold">Your Deployments</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {deployments.map((d) => (
-            <div
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {deployments.map((d, i) => (
+            <motion.div
               key={d.id}
-              className="rounded-xl border dark:border-gray-700 p-5 hover:shadow-md transition"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.07 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="rounded-xl border border-gray-200 dark:border-gray-700 p-5 dark:bg-gray-900 shadow-sm hover:shadow-lg transition cursor-pointer group"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold capitalize">{d.name}</h3>
                 <span
                   className={`text-xs px-2 py-1 rounded-full border dark:border-gray-700 ${
                     d.status === "Healthy"
-                      ? "bg-green-200/60 text-green-800 border-green-300"
-                      : "bg-yellow-200/60 text-yellow-800 border-yellow-300"
+                      ? "bg-green-200 text-green-900 border-green-300"
+                      : "bg-yellow-200 text-yellow-900 border-yellow-300"
                   }`}
                 >
                   {d.status}
@@ -107,32 +152,32 @@ export default function page() {
               </div>
               <a
                 href={d.url}
-                className="text-indigo-600 hover:underline text-sm truncate mt-1"
+                className="text-indigo-600 dark:text-indigo-400 block hover:underline text-sm truncate mt-1"
                 target="_blank"
               >
                 {d.url}
               </a>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                 Updated {d.updatedAt}
               </p>
               <div className="mt-4 flex gap-2">
                 <Link
                   href={`/deploy/${d.id}`}
-                  className="text-sm px-3 py-1.5 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition active:scale-95"
                 >
                   Manage
                 </Link>
                 <Link
                   href={`/logs/${d.id}`}
-                  className="text-sm px-3 py-1.5 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transitio"
+                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition active:scale-95"
                 >
                   Logs
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
     </main>
   );
 }
