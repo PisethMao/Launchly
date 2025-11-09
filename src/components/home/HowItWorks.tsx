@@ -95,7 +95,7 @@ export default function HowItWorks() {
           className="mt-10 md:mt-14 flex justify-center"
         >
           <Link
-            href="/deploy"
+            href="/deploy/new"
             className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-white font-medium shadow-md hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
             Deploy your first site

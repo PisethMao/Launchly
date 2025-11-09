@@ -4,6 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
+type DeploymentRecord = {
+  jobId: string;
+  project: string;
+  branch: string;
+  repo: string;
+};
+
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
@@ -32,22 +39,18 @@ export default function page() {
       const parsed = JSON.parse(storedUser);
       setUser({ name: parsed.name, plan: "free" });
     }
-    setDeployments([
-      {
-        id: "d1",
-        name: "portfolio",
-        url: "https://portfolio.launchly.dev",
-        status: "Healthy",
-        updatedAt: "2 min ago",
-      },
-      {
-        id: "d2",
-        name: "blog",
-        url: "https://blog.launchly.dev",
-        status: "Building",
-        updatedAt: "1 hr ago",
-      },
-    ]);
+    fetch("/api/deployments/list")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.deployments.map((d: DeploymentRecord) => ({
+          id: d.jobId,
+          name: d.project,
+          url: "https://coming-soon",
+          status: "Building",
+          updatedAt: "Just Now",
+        }));
+        setDeployments(formatted);
+      });
   }, [router]);
   if (!user) {
     return null;
@@ -101,9 +104,7 @@ export default function page() {
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Total Deployments
           </p>
-          <h3 className="text-2xl font-semibold mt-1">
-            {deployments.length}
-          </h3>
+          <h3 className="text-2xl font-semibold mt-1">{deployments.length}</h3>
         </div>
         <div className="p-5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-sm hover:shadow-md transition">
           <p className="text-sm text-gray-500 dark:text-gray-400">

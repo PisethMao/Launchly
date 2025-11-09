@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -17,6 +18,10 @@ export default function page() {
   const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [success, setSuccess] = useState<string | null>(null);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [projectName, setProjectName] = useState("");
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter();
   const validateRepositoryUrl = () => {
     if (!provider) {
       setError("Please select a repository provider.");
@@ -57,6 +62,39 @@ export default function page() {
       setError("No branches found in this repository.");
       setSuccess(null);
     }
+  };
+  const handleDeploy = async () => {
+    if (!repoUrl || !projectName) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+    const branchSelect = document.querySelector(
+      "select"
+    ) as HTMLSelectElement | null;
+    const branch = branchSelect?.value || "main";
+    alert(
+      `🚀 Deploymen started!\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`
+    );
+    const res = await fetch("/api/deploy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ repoUrl, branch, projectName }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
+      setError(null);
+      setTimeout(() => {
+        setSuccess(null);
+        router.push("/user");
+      }, 1500);
+    } else {
+      setError("⚠️ Deployment failed: " + data.error);
+    }
+    setLoading(false);
   };
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
@@ -183,6 +221,8 @@ export default function page() {
           <input
             type="text"
             placeholder="my-project"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
             className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
           />
         </div>
@@ -205,6 +245,7 @@ export default function page() {
         </div>
         <button
           type="button"
+          onClick={handleDeploy}
           className="mt-6 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition cursor-pointer"
         >
           Deploy Now
