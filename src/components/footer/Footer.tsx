@@ -40,7 +40,7 @@ export default function Footer() {
               Pricing
             </Link>
             <Link
-              href="/features"
+              href="/deploy/new"
               className="text-gray-600 dark:text-gray-400 hover:text-indigo-500 transition"
             >
               Deploy Now
