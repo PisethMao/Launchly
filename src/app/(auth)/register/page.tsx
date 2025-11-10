@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+import Toast from "@/components/Toast";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React, { useState } from "react";
 export default function page() {
@@ -13,31 +14,44 @@ export default function page() {
   const [confirm, setConfirm] = useState("");
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [loading, setLoading] = useState(false);
-  const onSubmit = (e: React.FormEvent) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+  };
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     if (!name || !email || !password || !confirm) {
-      alert("Please fill out all fields.");
+      showToast("Please fill out all fields.", "error");
       setLoading(false);
       return;
     }
     if (password !== confirm) {
-      alert("Passwords do not match.");
+      showToast("Passwords do not match.", "error");
       setLoading(false);
       return;
     }
-    const newUser = {
-      name,
-      email,
-      password,
-    };
-    localStorage.setItem("launchly_user", JSON.stringify(newUser));
-    // TODO: Replace with backend call later.
-    console.log({ email, name, password, confirm });
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      showToast(text || "Registration failed.", "error");
+      setLoading(false);
+      return;
+    }
     setTimeout(() => {
       setLoading(false);
-      alert("✅ Account created! Please log in.");
-      window.location.href = "/login";
+      showToast("✅ Account created! Redirecting...", "success");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1300);
     }, 800);
   };
   return (
@@ -46,6 +60,15 @@ export default function page() {
         <div className="absolute left-[10%] top-[15%] h-[350px] w-[350px] rounded-full bg-indigo-500/20 blur-3xl"></div>
         <div className="absolute right-[10%] bottom-[10%] h-[350px] w-[350px] rounded-full bg-blue-400/20 blur-3xl"></div>
       </div>
+      <AnimatePresence>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </AnimatePresence>
       <motion.form
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
