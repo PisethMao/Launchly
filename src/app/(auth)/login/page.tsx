@@ -1,41 +1,49 @@
 "use client";
 
+import Toast from "@/components/Toast";
 import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [email, setEmail] = useState("demo@launchly.app");
+  const [email, setEmail] = useState("");
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [password, setPassword] = useState("demo123");
+  const [password, setPassword] = useState("");
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const params = useSearchParams();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
   const callbackUrl = params.get("callbackUrl") ?? "/user";
-  const onSubmit = (e: React.FormEvent) => {
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+  };
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const storedUser = localStorage.getItem("launchly_user");
-    if (!storedUser) {
-      setLoading(false);
-      alert("⚠️ No account found. Please sign up first.");
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    setLoading(false);
+    if (res?.error) {
+      showToast("❌ Incorrect email or password.", "error");
       return;
     }
-    const user = JSON.parse(storedUser);
-    if (user.email === email && user.password === password) {
-      localStorage.setItem("launchly_auth", "true");
-      localStorage.setItem("launchly_current_user", JSON.stringify(user));
-      setTimeout(() => {
-        setLoading(false);
-        window.location.href = callbackUrl;
-      }, 600);
-    } else {
-      setLoading(false);
-      alert("❌ Incorrect email or password.");
-    }
+    showToast("✅ Welcome back!", "success");
+    setTimeout(() => {
+      router.push(callbackUrl);
+    }, 900);
   };
   return (
     <main className="font-poppins relative flex min-h-[90vh] items-center justify-center px-6">
@@ -43,12 +51,19 @@ export default function page() {
         <div className="absolute left-[-10%] top-[20%] h-[350px] w-[350px] rounded-full blur-3xl bg-indigo-500/20"></div>
         <div className="absolute right-[-10%] bottom-[20%] h-[350px] w-[350px] rounded-full blur-3xl bg-blue-400/20"></div>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <motion.form
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         action=""
-        onSubmit={onSubmit}
+        onSubmit={handleLogin}
         className="w-full max-w-md space-y-4 border rounded-2xl backdrop-blur-sm dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 p-8 shadow-xl"
       >
         <h1 className="text-3xl font-semibold text-center mb-6">Sign in</h1>

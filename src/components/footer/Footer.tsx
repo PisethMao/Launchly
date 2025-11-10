@@ -1,7 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 export default function Footer() {
+  const pathName = usePathname();
+  const hideOnAuth =
+    pathName.startsWith("/login") || pathName.startsWith("/register");
+  if (hideOnAuth) {
+    return null;
+  }
   return (
     <footer className="font-poppins relative mt-20 border-t border-gray-200 dark:border-gray-800 bg-linear-to-b from-(--background) to-(--background) dark:from-gray-950 dark:to-gray-900">
       <motion.div
