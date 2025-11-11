@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Toast from "@/components/Toast";
 
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -22,19 +23,33 @@ export default function page() {
   const [projectName, setProjectName] = useState("");
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error" | "warning";
+  } | null>(null);
+  const showToast = (message: string, type: "success" | "error" | "warning") => {
+    setToast({ message, type });
+  };
   const validateRepositoryUrl = () => {
     if (!provider) {
-      setError("Please select a repository provider.");
+      showToast("Please select a repository provider.", "error");
       return;
     }
     const isGitHub = repoUrl.includes("github.com");
     const isGitLab = repoUrl.includes("gitlab.com");
     if (provider === "github" && !isGitHub) {
-      setError("Invalid repository URL format. Expected a GitHub URL.");
+      showToast(
+        "Invalid repository URL format. Expected a GitHub URL.",
+        "error"
+      );
       return false;
     }
     if (provider === "gitlab" && !isGitLab) {
-      setError("Invalid repository URL format. Expected a GitLab URL.");
+      showToast(
+        "Invalid repository URL format. Expected a GitLab URL.",
+        "error"
+      );
       return false;
     }
     setError(null);
@@ -59,13 +74,13 @@ export default function page() {
       setSuccess(`✅ ${count} ${count === 1 ? "branch" : "branches"} found.`);
       setError(null);
     } else {
-      setError("No branches found in this repository.");
+      showToast("No branches found in this repository.", "error");
       setSuccess(null);
     }
   };
   const handleDeploy = async () => {
     if (!repoUrl || !projectName) {
-      setError("Please fill in all required fields.");
+      showToast("Please fill in all required fields.", "error");
       return;
     }
     setError(null);
@@ -75,8 +90,9 @@ export default function page() {
       "select"
     ) as HTMLSelectElement | null;
     const branch = branchSelect?.value || "main";
-    alert(
-      `🚀 Deploymen started!\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`
+    showToast(
+      `🚀 Deploymen started!\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`,
+      "success"
     );
     const res = await fetch("/api/deploy", {
       method: "POST",
@@ -92,7 +108,7 @@ export default function page() {
         router.push("/user");
       }, 1500);
     } else {
-      setError("⚠️ Deployment failed: " + data.error);
+      showToast("⚠️ Deployment failed: " + data.error, "error");
     }
     setLoading(false);
   };
@@ -111,6 +127,15 @@ export default function page() {
           repository details to deploy
         </p>
       </motion.div>
+      <AnimatePresence>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </AnimatePresence>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -233,8 +258,9 @@ export default function page() {
             <button
               type="button"
               onClick={() =>
-                alert(
-                  `Policy:\n\nPlease ensure your deployment follows company guidelines and security policies.\nProject must include "index.html" file.`
+                showToast(
+                  `Policy:\n\nPlease ensure your deployment follows company guidelines and security policies.\nProject must include "index.html" file.`,
+                  "warning"
                 )
               }
               className="text-indigo-400 underline hover:text-indigo-300 cursor-pointer"
