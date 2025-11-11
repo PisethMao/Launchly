@@ -5,10 +5,16 @@ import { useState } from "react";
 import styles from "./style.module.css";
 import { navItems } from "@/data/navItemData";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
-import UserMenu from "./UserMenu";
+import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useThemeToggle();
+  const pathName = usePathname();
+  const hideOnAuth =
+    pathName.startsWith("/login") || pathName.startsWith("/register");
+  if (hideOnAuth) {
+    return null;
+  }
   return (
     <nav
       className={`font-poppins fixed top-0 left-0 w-full bg-(--background)/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-(--foreground)/10 dark:border-gray-700 shadow-md z-50 ${styles.navbarAnimated}`}
@@ -22,16 +28,26 @@ export default function Navbar() {
         </Link>
         <div className="hidden md:flex items-center space-x-8">
           {navItems.map((item, index) => (
-            <div key={index}>
-              <Link
-                className={`${styles.navLink} text-(--foreground) hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
-                href={item.href}
-              >
-                {item.name}
-              </Link>
-            </div>
+            <Link
+              key={index}
+              className={`${styles.navLink} text-(--foreground) hover:text-indigo-500 dark:hover:text-indigo-400 transition`}
+              href={item.href}
+            >
+              {item.name}
+            </Link>
           ))}
-          <UserMenu />
+          <Link
+            href="/login"
+            className="px-3 py-1.5 rounded-lg border dark:border-gray-700"
+          >
+            Log in
+          </Link>
+          <Link
+            href="/register"
+            className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white"
+          >
+            Sign up
+          </Link>
           <button
             type="button"
             aria-label="Toggle Theme"
@@ -63,7 +79,18 @@ export default function Navbar() {
                   </Link>
                 </div>
               ))}
-              <UserMenu />
+              <Link
+                href="/login"
+                className="px-3 py-1.5 rounded-lg border dark:border-gray-700"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white"
+              >
+                Sign up
+              </Link>
               <button
                 type="button"
                 onClick={toggleTheme}

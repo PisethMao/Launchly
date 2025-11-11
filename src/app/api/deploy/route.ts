@@ -1,17 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { execSync, spawnSync } from "child_process";
 import path from "path";
 import fs from "fs";
 import { buildCloneUrl } from "../branches/route";
 
-/* -------------------------------------------------
-   Helper: Clone repository
----------------------------------------------------*/
 async function cloneRepository(repoUrl: string, targetDir: string) {
     const finalUrl = buildCloneUrl(repoUrl);
     console.log(`📦 Cloning from: ${finalUrl}`);
-
     try {
         execSync(`git clone --depth=1 ${finalUrl} ${targetDir}`, {
             stdio: "inherit",
@@ -21,17 +16,15 @@ async function cloneRepository(repoUrl: string, targetDir: string) {
                 GIT_ASKPASS: "true",
             },
         });
-    } catch (err: any) {
-        console.error("❌ Git clone failed:", err.message);
+    } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error("❌ Git clone failed:", errorMessage);
         throw new Error(
             `Clone failed. Check if repo exists, or tokens are missing/invalid.`
         );
     }
 }
 
-/* -------------------------------------------------
-   API: POST /api/run-script
----------------------------------------------------*/
 export async function POST(req: Request) {
     try {
         const { repoUrl, subdomain } = await req.json();
@@ -41,16 +34,13 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-
         // 1️⃣ Clone repository
         const repoName =
             repoUrl.split("/").pop()?.replace(".git", "") || "project";
         const projectPath = path.join("/tmp", repoName);
         if (fs.existsSync(projectPath))
             fs.rmSync(projectPath, { recursive: true, force: true });
-
         await cloneRepository(repoUrl, projectPath);
-
         // 2️⃣ Detect project type
         const pkgPath = path.join(projectPath, "package.json");
         let projectType = "static";
@@ -61,7 +51,6 @@ export async function POST(req: Request) {
             else if (pkg.scripts?.build) projectType = "react";
         }
         console.log(`🧠 Detected project type: ${projectType}`);
-
         // 3️⃣ Install dependencies
         if (fs.existsSync(path.join(projectPath, "package.json"))) {
             console.log("📥 Installing dependencies...");
@@ -71,7 +60,6 @@ export async function POST(req: Request) {
         } else {
             console.log("📁 No package.json found — skipping npm install.");
         }
-
         // 4️⃣ Build logic
         let buildPath = projectPath;
         if (projectType === "static") {
@@ -92,7 +80,6 @@ export async function POST(req: Request) {
             } catch {
                 console.log("⚠️ No build script found; using raw folder.");
             }
-
             for (const dir of ["dist", "build", "out"]) {
                 const candidate = path.join(projectPath, dir);
                 if (fs.existsSync(candidate)) {
@@ -101,7 +88,6 @@ export async function POST(req: Request) {
                 }
             }
         }
-
         // 5️⃣ Deploy using your existing shell script
         const scriptPath = path.join(
             process.cwd(),
@@ -111,7 +97,6 @@ export async function POST(req: Request) {
             "deploy_script.sh"
         );
         const domain = "chanchhay.site";
-
         console.log("🚀 Running deploy script...");
         const deploy = spawnSync("bash", [
             scriptPath,
@@ -120,22 +105,33 @@ export async function POST(req: Request) {
             domain,
             projectType,
         ]);
-
         const output =
             deploy.stdout.toString() + "\n" + deploy.stderr.toString();
         console.log(output);
-
         const match = output.match(/::OUTPUT::(https:\/\/[^\s]+)/);
         const finalUrl = match ? match[1] : "Unknown URL";
-
         return NextResponse.json({
             message: `✅ Deployed successfully!`,
             url: finalUrl,
         });
-    } catch (error: any) {
-        console.error("❌ Deployment error:", error.message);
+    } catch (error: unknown) {
+        const errInfo = (() => {
+            if (error instanceof Error) {
+                return { message: error.message, stderr: (error as unknown as Record<string, unknown>).stderr };
+            }
+            if (typeof error === "string") {
+                return { message: error };
+            }
+            if (error && typeof error === "object") {
+                const e = error as Record<string, unknown>;
+                return { message: e.message ?? JSON.stringify(e), stderr: e.stderr };
+            }
+            return { message: String(error) };
+        })();
+        console.error("❌ Deployment error:", errInfo.message);
+        if (errInfo.stderr) console.error("stderr:", errInfo.stderr);
         return NextResponse.json(
-            { message: error.stderr?.toString() || error.message },
+            { message: errInfo.stderr?.toString?.() || errInfo.message },
             { status: 500 }
         );
     }

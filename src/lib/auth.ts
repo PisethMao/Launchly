@@ -1,5 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import prisma from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -14,24 +16,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const email = credentials?.email?.trim().toLowerCase();
         const password = credentials?.password;
-        if (email === "demo@launchly.app" && password === "demo123") {
-          return {
-            id: "u_demo",
-            name: "Launchly Demo",
-            email: "demo@launchly.app",
-            image: "https://www.gravatar.com/avatar/?d=identicon",
-            plan: "Free",
-          };
-        }
-        return null;
+        if (!email || !password) return null;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) return null;
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) return null;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          plan: user.plan,
+        };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.plan = user.plan ?? "Free";
-      }
+      if (user) token.plan = user.plan ?? "Free";
       return token;
     },
     async session({ session, token }) {

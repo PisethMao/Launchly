@@ -3,21 +3,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { signOut, useSession } from "next-auth/react";
 
 type DeploymentRecord = {
   jobId: string;
-  project: string;
-  branch: string;
-  repo: string;
+  projectName: string;
+  domain: string | null;
+  status: string;
+  createdAt: string;
 };
 
 export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [user, setUser] = useState<{ name?: string; plan?: string } | null>(
-    null
-  );
   interface Deployment {
     id: string;
     name: string;
@@ -28,31 +26,28 @@ export default function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { data: session, status } = useSession();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    const isAuth = localStorage.getItem("launchly_auth");
-    if (!isAuth) {
-      router.push("/login");
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
       return;
-    }
-    const storedUser = localStorage.getItem("launchly_current_user");
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser({ name: parsed.name, plan: "free" });
     }
     fetch("/api/deployments/list")
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.deployments.map((d: DeploymentRecord) => ({
           id: d.jobId,
-          name: d.project,
-          url: "https://coming-soon",
-          status: "Building",
-          updatedAt: "Just Now",
+          name: d.projectName,
+          url: d.domain ? `https://${d.domain}` : "http://coming-soon",
+          status: d.status === "live" ? "Healthy" : "Building",
+          updatedAt: new Date(d.createdAt).toLocaleString(),
         }));
         setDeployments(formatted);
-      });
-  }, [router]);
-  if (!user) {
+      })
+      .catch(() => setDeployments([]));
+  }, [status, router]);
+  if (status === "loading") {
     return null;
   }
   return (
@@ -64,10 +59,12 @@ export default function page() {
       >
         <div>
           <h1 className="text-4xl font-semibold tracking-tight">
-            Welcome, <span className="text-indigo-600">{user.name}</span>
+            Welcome,{" "}
+            <span className="text-indigo-600">{session?.user?.name}</span>
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Current Plan · <span className="font-medium">{user.plan}</span>
+            Current Plan ·{" "}
+            <span className="font-medium">{session?.user?.plan}</span>
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -86,8 +83,7 @@ export default function page() {
           <button
             type="button"
             onClick={() => {
-              localStorage.removeItem("launchly_auth");
-              router.push("/");
+              signOut({ callbackUrl: "/" });
             }}
             className="px-5 py-2.5 cursor-pointer rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 transition active:scale-95"
           >
