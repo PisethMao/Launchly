@@ -5,22 +5,15 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function page() {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function NewDeploymentPage() {
     const [repoUrl, setRepoUrl] = useState("");
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [branches, setBranches] = useState<string[]>([]);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [selectedBranch, setSelectedBranch] = useState<string>("main");
     const [loading, setLoading] = useState(false);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [provider, setProvider] = useState<"github" | "gitlab" | null>(null);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [error, setError] = useState<string | null>(null);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [success, setSuccess] = useState<string | null>(null);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [projectName, setProjectName] = useState("");
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter();
     const validateRepositoryUrl = () => {
         if (!provider) {
@@ -53,6 +46,7 @@ export default function page() {
         });
         const data = await res.json();
         setBranches(data.branches);
+        if (data.branches && data.branches.length > 0) setSelectedBranch(data.branches[0]);
         setLoading(false);
         if (data.branches && data.branches.length > 0) {
             const count = data.branches.length;
@@ -66,6 +60,7 @@ export default function page() {
         }
     };
     const handleDeploy = async () => {
+        // Validate
         if (!repoUrl || !projectName) {
             setError("Please fill in all required fields.");
             return;
@@ -73,28 +68,31 @@ export default function page() {
         setError(null);
         setSuccess(null);
         setLoading(true);
-        const branchSelect = document.querySelector(
-            "select"
-        ) as HTMLSelectElement | null;
-        const branch = branchSelect?.value || "main";
-        alert(
-            `🚀 Deploymen started!\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`
-        );
+
+        const branch = selectedBranch || "main";
+
+        // Informational success message instead of alert
+        setSuccess(`🚀 Deployment started — ${projectName} (${branch})`);
+
         const res = await fetch("/api/deploy", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ repoUrl, subdomain: projectName, branch}),
+            body: JSON.stringify({ repoUrl, subdomain: projectName, branch }),
         });
         const data = await res.json();
         if (res.ok) {
             setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
             setError(null);
+
+            // Route user appropriately: if authenticated go to /user, otherwise to /login
+            const isAuth = !!localStorage.getItem("launchly_auth");
             setTimeout(() => {
                 setSuccess(null);
-                router.push("/user");
-            }, 1500);
+                if (isAuth) router.push("/user");
+                else router.push(`/login?next=/user`);
+            }, 800);
         } else {
-            setError("⚠️ Deployment failed: " + data.error);
+            setError("⚠️ Deployment failed: " + (data.error || "Unknown error"));
         }
         setLoading(false);
     };
@@ -200,11 +198,15 @@ export default function page() {
                 {branches.length > 0 && (
                     <select
                         name=""
-                        id=""
+                        id="branch-select"
                         className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
+                        value={selectedBranch}
+                        onChange={(e) => setSelectedBranch(e.target.value)}
                     >
                         {branches.map((b) => (
-                            <option key={b}>{b}</option>
+                            <option key={b} value={b}>
+                                {b}
+                            </option>
                         ))}
                     </select>
                 )}
