@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --launchly-primary: #4f46e5;
-  --launchly-secondary: #7c3aed;
-  --launchly-accent: #38bdf8;
+    --background: #ffffff;
+    --foreground: #171717;
+    --launchly-primary: #4f46e5;
+    --launchly-secondary: #7c3aed;
+    --launchly-accent: #38bdf8;
 }
 
 :root {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-poppins: var(--font-poppins);
-  --font-khmer: var(--font-khmer);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-poppins: var(--font-poppins);
+    --font-khmer: var(--font-khmer);
 }
 
 .dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --launchly-primary: #6366f1;
-  --launchly-secondary: #8b5cf6;
-  --launchly-accent: #38bdf8;
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --launchly-primary: #6366f1;
+    --launchly-secondary: #8b5cf6;
+    --launchly-accent: #38bdf8;
 }
 
 html,
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
-  box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
