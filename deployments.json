@@ -1,0 +1,33 @@
+[
+  {
+    "jobId": "1762855841283",
+    "projectName": "abc",
+    "domain": null,
+    "status": "failed",
+    "error": "Command failed: ssh -o StrictHostKeyChecking=no -i /home/launchly/.ssh/id_ed25519 launchly@192.168.1.5 \"/home/launchly/deploy.sh 'https://github.com/PisethMao/git-for-test-deploy-project' 'master' 'abc' '1762855841283'\"\nWarning: Identity file /home/launchly/.ssh/id_ed25519 not accessible: No such file or directory.\nssh: connect to host 192.168.1.5 port 22: Connection timed out\r\n",
+    "createdAt": "2025-11-11T10:11:02.555Z"
+  },
+  {
+    "jobId": "1762856129216",
+    "projectName": "appp",
+    "domain": "appp.piseth.space",
+    "status": "live",
+    "createdAt": "2025-11-11T10:15:31.785Z"
+  },
+  {
+    "jobId": "1762875142815",
+    "projectName": "app",
+    "domain": null,
+    "status": "failed",
+    "error": "Command failed: ssh -o StrictHostKeyChecking=no -i /home/launchly/.ssh/id_ed25519 launchly@192.168.1.5 \"/home/launchly/deploy.sh 'https://github.com/PisethMao/git-for-test-deploy-project' 'master' 'app' '1762875142815'\"\nWarning: Identity file /home/launchly/.ssh/id_ed25519 not accessible: No such file or directory.\nssh: connect to host 192.168.1.5 port 22: Connection timed out\r\n",
+    "createdAt": "2025-11-11T15:32:44.183Z"
+  },
+  {
+    "jobId": "1762875205200",
+    "projectName": "app",
+    "domain": null,
+    "status": "failed",
+    "error": "Command failed: ssh -o StrictHostKeyChecking=no -i /home/launchly/.ssh/id_ed25519 launchly@192.168.1.5 \"/home/launchly/deploy.sh 'https://github.com/PisethMao/git-for-test-deploy-project' 'master' 'app' '1762875205200'\"\nWarning: Identity file /home/launchly/.ssh/id_ed25519 not accessible: No such file or directory.\nssh: connect to host 192.168.1.5 port 22: Connection timed out\r\n",
+    "createdAt": "2025-11-11T15:33:46.329Z"
+  }
+]
