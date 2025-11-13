@@ -1,94 +1,67 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { execSync, spawnSync } from "child_process";
 import path from "path";
 import fs from "fs";
 import { buildCloneUrl } from "../branches/route";
-
-async function cloneRepository(repoUrl: string, targetDir: string) {
-    const finalUrl = buildCloneUrl(repoUrl);
-    console.log(`📦 Cloning from: ${finalUrl}`);
-    try {
-        execSync(`git clone --depth=1 ${finalUrl} ${targetDir}`, {
-            stdio: "inherit",
-            env: {
-                ...process.env,
-                GIT_TERMINAL_PROMPT: "0",
-                GIT_ASKPASS: "true",
-            },
-        });
-    } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        console.error("❌ Git clone failed:", errorMessage);
-        throw new Error(
-            `Clone failed. Check if repo exists, or tokens are missing/invalid.`
-        );
-    }
-}
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: Request) {
     try {
-        const { repoUrl, subdomain } = await req.json();
+        const { repoUrl, subdomain, tempSessionId } = await req.json();
         if (!repoUrl || !subdomain) {
             return NextResponse.json(
                 { message: "Repo URL and subdomain required" },
                 { status: 400 }
             );
         }
-        // 1️⃣ Clone repository
+
+        // 🧱 Clone repository
         const repoName =
             repoUrl.split("/").pop()?.replace(".git", "") || "project";
         const projectPath = path.join("/tmp", repoName);
         if (fs.existsSync(projectPath))
             fs.rmSync(projectPath, { recursive: true, force: true });
-        await cloneRepository(repoUrl, projectPath);
-        // 2️⃣ Detect project type
-        const pkgPath = path.join(projectPath, "package.json");
+
+        const finalUrl = buildCloneUrl(repoUrl);
+        console.log(`📦 Cloning from: ${finalUrl}`);
+        execSync(`git clone --depth=1 ${finalUrl} ${projectPath}`, {
+            stdio: "inherit",
+            env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        });
+
+        // 🧠 Detect project type
         let projectType = "static";
+        const pkgPath = path.join(projectPath, "package.json");
         if (fs.existsSync(pkgPath)) {
             const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
             if (pkg.dependencies?.next) projectType = "next";
             else if (pkg.dependencies?.vite) projectType = "vite";
             else if (pkg.scripts?.build) projectType = "react";
         }
+
         console.log(`🧠 Detected project type: ${projectType}`);
-        // 3️⃣ Install dependencies
-        if (fs.existsSync(path.join(projectPath, "package.json"))) {
-            console.log("📥 Installing dependencies...");
+
+        // ⚙️ Build logic
+        if (projectType !== "static") {
+            console.log("📦 Installing dependencies...");
             execSync(`cd ${projectPath} && npm install --legacy-peer-deps`, {
                 stdio: "inherit",
             });
-        } else {
-            console.log("📁 No package.json found — skipping npm install.");
-        }
-        // 4️⃣ Build logic
-        let buildPath = projectPath;
-        if (projectType === "static") {
-            console.log("⚙️ Static project — no build needed.");
-        } else if (projectType === "next") {
-            console.log("⚙️ Building Next.js (safe mode)...");
-            execSync(
-                `cd ${projectPath} && NODE_ENV=production NEXT_SKIP_PREFLIGHT_CHECK=true NEXT_DISABLE_PRERENDER=true npx next build`,
-                { stdio: "inherit" }
-            );
-            buildPath = projectPath;
-        } else {
-            console.log("⚙️ Building static project...");
+
+            console.log("⚙️ Building project...");
             try {
                 execSync(`cd ${projectPath} && npm run build`, {
                     stdio: "inherit",
                 });
             } catch {
-                console.log("⚠️ No build script found; using raw folder.");
-            }
-            for (const dir of ["dist", "build", "out"]) {
-                const candidate = path.join(projectPath, dir);
-                if (fs.existsSync(candidate)) {
-                    buildPath = candidate;
-                    break;
-                }
+                console.log("⚠️ Build failed — fallback to static folder.");
             }
         }
-        // 5️⃣ Deploy using your existing shell script
+
+        // 🚀 Deploy script
         const scriptPath = path.join(
             process.cwd(),
             "src",
@@ -101,37 +74,51 @@ export async function POST(req: Request) {
         const deploy = spawnSync("bash", [
             scriptPath,
             subdomain,
-            buildPath,
+            projectPath,
             domain,
             projectType,
         ]);
         const output =
             deploy.stdout.toString() + "\n" + deploy.stderr.toString();
         console.log(output);
+
         const match = output.match(/::OUTPUT::(https:\/\/[^\s]+)/);
-        const finalUrl = match ? match[1] : "Unknown URL";
-        return NextResponse.json({
-            message: `✅ Deployed successfully!`,
-            url: finalUrl,
+        const liveUrl = match ? match[1] : "Unknown URL";
+
+        // 🧩 Record deployment in DB
+        const session = await getServerSession({ req, ...authOptions }); // ✅ attach req
+        const email = session?.user?.email || null;
+        let userId: string | null = null;
+
+        if (email) {
+            const user = await prisma.user.findUnique({ where: { email } });
+            userId = user?.id || null;
+        }
+
+        await prisma.deployment.create({
+            data: {
+                repoUrl,
+                subdomain,
+                port: 4000,
+                buildPath: projectPath,
+                projectType,
+                liveUrl,
+                status: "running",
+                userId, // ✅ link logged-in user
+                tempSessionId: userId ? null : tempSessionId, // ✅ fallback for guests
+            },
         });
-    } catch (error: unknown) {
-        const errInfo = (() => {
-            if (error instanceof Error) {
-                return { message: error.message, stderr: (error as unknown as Record<string, unknown>).stderr };
-            }
-            if (typeof error === "string") {
-                return { message: error };
-            }
-            if (error && typeof error === "object") {
-                const e = error as Record<string, unknown>;
-                return { message: e.message ?? JSON.stringify(e), stderr: e.stderr };
-            }
-            return { message: String(error) };
-        })();
-        console.error("❌ Deployment error:", errInfo.message);
-        if (errInfo.stderr) console.error("stderr:", errInfo.stderr);
+
+        console.log("✅ Deployment recorded in database.");
+
+        return NextResponse.json({
+            message: "✅ Deployed successfully!",
+            url: liveUrl,
+        });
+    } catch (error: any) {
+        console.error("❌ Deployment error:", error);
         return NextResponse.json(
-            { message: errInfo.stderr?.toString?.() || errInfo.message },
+            { message: error.message || "Unexpected deployment error" },
             { status: 500 }
         );
     }

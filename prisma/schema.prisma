@@ -1,20 +1,33 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id String @id @default(cuid())
-  name String
-  email String @unique
-  password String
-  plan String @default("Free")
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  plan        String       @default("Free")
+  deployments Deployment[]
 }
 
+model Deployment {
+  id            Int      @id @default(autoincrement())
+  repoUrl       String
+  subdomain     String   @unique
+  port          Int?
+  buildPath     String
+  projectType   String
+  status        String   @default("running")
+  liveUrl       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String?
+  tempSessionId String?
+  user          User?    @relation(fields: [userId], references: [id])
+}

@@ -35,10 +35,11 @@ export default function page() {
       setLoading(false);
       return;
     }
+    const tempSessionId = localStorage.getItem("launchly_session");
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, tempSessionId}),
     });
     if (!res.ok) {
       const text = await res.text();
