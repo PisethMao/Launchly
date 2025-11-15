@@ -77,8 +77,6 @@ curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/
 pm2 restart cloudflare-tunnel
 
 ### ≡ Output
-URL="https://$HOSTNAME"
-echo "✅ Project Hosted!"
-echo ":::PORT:::$PORT:::"
-echo ":::URL:::$URL:::"
+echo ":::PORT:::${PORT}:::"
+echo ":::URL:::https://${SUBDOMAIN}.${DOMAIN}::::"
 

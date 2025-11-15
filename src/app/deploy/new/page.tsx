@@ -215,6 +215,7 @@ export default function NewDeploymentPage() {
                 onChange={(e) => setRepoUrl(e.target.value)}
                 placeholder="https://github.com/username/project"
                 className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 mt-1 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
+                required
             />
             <button
                 type="button"
