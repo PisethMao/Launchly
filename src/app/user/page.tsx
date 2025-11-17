@@ -29,10 +29,6 @@ export default function page() {
   const { data: session, status } = useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
-      return;
-    }
     fetch("/api/deployments/list")
       .then((res) => res.json())
       .then((data) => {

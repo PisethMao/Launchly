@@ -98,7 +98,11 @@ export default function page() {
     const res = await fetch("/api/deploy", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ repoUrl, branch, projectName }),
+      body: JSON.stringify({
+        repoUrl,
+        subdomain: projectName,
+        branch,
+      }),
     });
     const data = await res.json();
 
