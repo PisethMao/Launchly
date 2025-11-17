@@ -90,7 +90,17 @@ export default function NewDeploymentPage() {
             showToast("No branches found in this repository.", "error");
         }
     };
-
+    setLoading(true);
+    const res = await fetch("/api/deploy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        repoUrl,
+        subdomain: projectName,
+        branch,
+      }),
+    });
+    const data = await res.json();
     const handleDeploy = async () => {
         if (!repoUrl || !projectName) {
             showToast("Please fill in all required fields.", "error");
