@@ -1,21 +1,29 @@
-import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { NextRequest } from "next/server";
 
-interface Deployment {
-  createdAt: string;
-}
+export async function GET(req: NextRequest) {
+    const session = await getServerSession({ req, ...authOptions });
+    const email = session?.user?.email || null;
 
-export const dynamic = "force-dynamic";
+    // Read tempSessionId from query (for guests)
+    const url = new URL(req.url);
+    const tempSessionId = url.searchParams.get("tempSessionId");
 
-export async function GET() {
-  const filePath = path.join(process.cwd(), "deployments.json");
-  let deployments: Deployment[] = [];
-  if (fs.existsSync(filePath)) {
-    deployments = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  }
-  deployments.sort((a: Deployment, b: Deployment) =>
-    (b.createdAt || "").localeCompare(a.createdAt || "")
-  );
-  return NextResponse.json({ deployments });
+    let user = null;
+    if (email) {
+        user = await prisma.user.findUnique({ where: { email } });
+    }
+
+    const deployments = await prisma.deployment.findMany({
+        where: user
+            ? { userId: user.id }
+            : tempSessionId
+            ? { tempSessionId }
+            : {},
+        orderBy: { createdAt: "desc" },
+    });
+
+    return Response.json({ deployments });
 }
