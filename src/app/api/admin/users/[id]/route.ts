@@ -1,38 +1,49 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs";
-import { verifyAdmin } from "@/lib/adminAuth";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { verifyAdmin } from "@/lib/adminAuth";
 
-export async function PUT(req: Request, { params }: any) {
-    const admin = verifyAdmin(req);
+// GET /api/admin/users/:id
+export async function GET(
+    req: Request,
+    context: { params: Promise<{ id: string }> }
+) {
+    const { params } = context;
+    const { id } = await params;
+
+    const admin = await verifyAdmin(req);
     if (!admin)
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    const { name, email, password, plan, role } = await req.json();
-
-    const data: any = { name, email, plan, role };
-
-    if (password) {
-        data.password = await bcrypt.hash(password, 10);
-    }
-
-    const user = await prisma.user.update({
-        where: { id: params.id },
-        data,
+    const user = await prisma.user.findUnique({
+        where: { id },
     });
+
+    if (!user) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
     return NextResponse.json(user);
 }
 
-export async function DELETE(req: Request, { params }: any) {
-    const admin = verifyAdmin(req);
+// PATCH /api/admin/users/:id
+export async function PATCH(
+    req: Request,
+    context: { params: Promise<{ id: string }> }
+) {
+    const { params } = context;
+    const { id } = await params;
+
+    const admin = await verifyAdmin(req);
     if (!admin)
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    await prisma.user.delete({
-        where: { id: params.id },
+    const body = await req.json();
+
+    const updated = await prisma.user.update({
+        where: { id },
+        data: body,
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(updated);
 }
