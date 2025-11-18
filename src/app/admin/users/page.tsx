@@ -25,6 +25,22 @@ export default function UsersPage() {
         loadUsers();
     }, []);
 
+    async function handleDelete(id: string) {
+        if (!confirm("Are you sure you want to delete this user?")) return;
+
+        const res = await fetch(`/api/admin/users/${id}/delete`, {
+            method: "DELETE",
+        });
+
+        if (!res.ok) {
+            alert("Failed to delete user");
+            return;
+        }
+
+        // Refresh UI (remove from list locally)
+        setUsers(users.filter((u) => u.id !== id));
+    }
+
     return (
         <div>
             <h1 className="text-3xl font-bold mb-6">Users Management</h1>
@@ -36,6 +52,7 @@ export default function UsersPage() {
                         <th className="p-3 text-left">Email</th>
                         <th className="p-3 text-left">Plan</th>
                         <th className="p-3 text-left">Role</th>
+                        <th className="p-3 text-left">Actions</th>
                     </tr>
                 </thead>
 
@@ -46,6 +63,22 @@ export default function UsersPage() {
                             <td className="p-3">{u.email}</td>
                             <td className="p-3">{u.plan}</td>
                             <td className="p-3">{u.role}</td>
+                            <td className="p-3">
+                                <a
+                                    href={`/admin/users/${u.id}/edit`}
+                                    className="text-blue-600 underline"
+                                >
+                                    Edit
+                                </a>
+                            </td>
+                            <td className="p-3">
+                                <button
+                                    onClick={() => handleDelete(u.id)}
+                                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                                >
+                                    Delete
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
