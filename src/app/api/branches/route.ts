@@ -1,60 +1,106 @@
-import { spawnSync } from "child_process";
 import { NextResponse } from "next/server";
+import { spawnSync } from "child_process";
 
-/* -------------------------------------------------
-   Helper: Build secure clone URL for any repository
----------------------------------------------------*/
-export function buildCloneUrl(originalUrl: string): string {
-    let url = originalUrl.trim();
+// ------------------------------
+// GITHUB visibility
+// ------------------------------
+async function isGitHubPrivate(repoUrl: string, token?: string) {
+  if (!repoUrl.includes("github.com")) return null;
 
-    // If SSH form (git@github.com:user/repo.git), leave as-is
-    if (url.startsWith("git@")) return url;
+  const clean = repoUrl.replace("https://github.com/", "").replace(".git", "");
+  const apiUrl = `https://api.github.com/repos/${clean}`;
 
-    // Handle HTTPS repos
-    if (url.startsWith("https://")) {
-        const host = new URL(url).host;
-        const ghToken = process.env.GITHUB_TOKEN;
-        const glToken = process.env.GITLAB_TOKEN;
+  const res = await fetch(apiUrl, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
-        if (host.includes("github.com") && ghToken) {
-            url = url.replace("https://", `https://${ghToken}@`);
-        } else if (host.includes("gitlab.com") && glToken) {
-            url = url.replace("https://", `https://oauth2:${glToken}@`);
-        }
-    }
-    return url;
+  if (res.status === 404 || res.status === 403) return true;
+
+  const data = await res.json();
+  return data.private === true;
 }
 
-export async function POST(req: Request) {
-    const { repoUrl } = await req.json();
-    // Ensure we use the same token-injection logic as the deploy flow so
-    // HTTPS requests include tokens when available and Git won't prompt.
-    const finalUrl = buildCloneUrl(repoUrl);
+// ------------------------------
+// GITLAB visibility (API uses lowercase)
+// ------------------------------
+async function isGitLabPrivate(repoUrl: string, token?: string) {
+  if (!repoUrl.includes("gitlab.com")) return null;
 
-    const result = spawnSync(
-        "git",
-        ["ls-remote", "--heads", finalUrl],
-        {
-            encoding: "utf-8",
-            env: {
-                ...process.env,
-                // disable interactive prompts from git
-                GIT_TERMINAL_PROMPT: "0",
-            },
-            // keep stdout/stderr available in the returned object
-        }
-    );
-    if (result.status !== 0) {
-        return NextResponse.json({ branches: [] });
+  const cleanLower = repoUrl
+    .replace("https://gitlab.com/", "")
+    .replace(".git", "")
+    .trim()
+    .toLowerCase();
+
+  const encoded = encodeURIComponent(cleanLower);
+
+  const res = await fetch(`https://gitlab.com/api/v4/projects/${encoded}`, {
+    headers: token ? { "PRIVATE-TOKEN": token } : {},
+  });
+
+  if (res.status === 401 || res.status === 403) return true;
+  if (res.status === 200) {
+    const data = await res.json();
+    return data.visibility === "private";
+  }
+
+  return true;
+}
+
+// ------------------------------
+// MAIN
+// ------------------------------
+export async function POST(req: Request) {
+  const { repoUrl, userToken } = await req.json();
+
+  const isGitHub = repoUrl.includes("github.com");
+  const isGitLab = repoUrl.includes("gitlab.com");
+
+  let isPrivate = null;
+
+  if (isGitHub) isPrivate = await isGitHubPrivate(repoUrl, userToken);
+  if (isGitLab) isPrivate = await isGitLabPrivate(repoUrl, userToken);
+
+  if (isPrivate && !userToken) {
+    return NextResponse.json({ private: true, branches: [] });
+  }
+
+  // ------------------------------
+  // Build clone URL (correct case!)
+  // ------------------------------
+  let cloneUrl = repoUrl;
+
+  if (userToken) {
+    if (isGitHub) {
+      cloneUrl = repoUrl.replace("https://", `https://${userToken}@`);
     }
-    const branches = result.stdout
-        .split("\n")
-        .map((line) => {
-            // ls-remote format: <hash>\trefs/heads/<branch>
-            const parts = line.split(/\s+/);
-            const ref = parts[1] || "";
-            return ref.replace("refs/heads/", "");
-        })
-        .filter(Boolean);
-    return NextResponse.json({ branches });
+
+    if (isGitLab) {
+      const cleanOriginal = repoUrl
+        .replace("https://gitlab.com/", "")
+        .replace(".git", "")
+        .trim(); // KEEP EXACT CASE
+
+      cloneUrl = `https://oauth2:${userToken}@gitlab.com/${cleanOriginal}.git`;
+    }
+  }
+
+  // ------------------------------
+  // Fetch branches
+  // ------------------------------
+  const result = spawnSync("git", ["ls-remote", "--heads", cloneUrl], {
+    encoding: "utf-8",
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+  });
+
+  if (result.status !== 0 || !result.stdout.trim()) {
+    return NextResponse.json({ private: true, branches: [] });
+  }
+
+  const branches = result.stdout
+    .split("\n")
+    .map((line) => line.split(/\s+/)[1]?.replace("refs/heads/", ""))
+    .filter(Boolean);
+
+  return NextResponse.json({ private: false, branches });
 }
