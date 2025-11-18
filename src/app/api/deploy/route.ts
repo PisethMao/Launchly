@@ -19,9 +19,9 @@ export async function POST(req: Request) {
         }
 
         // Clone repo
-        const repoName =
-            repoUrl.split("/").pop()?.replace(".git", "") || "project";
-        const projectPath = path.join("/home/chanchhay/userdeploy", repoName);
+        // const repoName =
+        //     repoUrl.split("/").pop()?.replace(".git", "") || "project";
+        const projectPath = path.join("/home/chanchhay/userdeploy", subdomain);
         if (fs.existsSync(projectPath))
             fs.rmSync(projectPath, { recursive: true, force: true });
 
