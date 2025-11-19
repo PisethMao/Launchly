@@ -1,31 +1,133 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { verifyAdmin } from "@/lib/adminAuth";
-import prisma from "@/lib/db";
-import fs from "fs";
 import { NextResponse } from "next/server";
-import path from "path";
+import { prisma } from "@/lib/prisma";
+import fs from "fs";
+import { exec } from "child_process";
+import util from "util";
 
-export async function DELETE(req: Request, { params }: any) {
-    const admin = verifyAdmin(req);
-    if (!admin)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+const execAsync = util.promisify(exec);
 
-    const project = await prisma.project.findUnique({
-        where: { id: Number(params.id) },
-    });
+// adjust if needed
+const CONFIG_PATH =
+    process.env.CF_CONFIG_PATH || "/home/chanchhay/.cloudflared/config.yml";
 
-    if (!project)
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
+// Cloudflare config
+const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID!;
+const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN!;
 
-    // Remove folder from server (e.g., /var/www/project.piseth.space)
-    const dir = `/var/www/${project.domain}`;
-    if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true });
+// --- remove ingress entry from config.yml ---
+function removeIngressEntry(subdomain: string) {
+    const hostname = `${subdomain}.chanchhay.site`;
+
+    const config = fs.readFileSync(CONFIG_PATH, "utf8");
+    const lines = config.split("\n");
+
+    const newLines: string[] = [];
+    let skipNextServiceLine = false;
+
+    for (const line of lines) {
+        if (
+            line.includes(`hostname: "${hostname}"`) ||
+            line.includes(`hostname: ${hostname}`)
+        ) {
+            // skip this line and the next line (service)
+            skipNextServiceLine = true;
+            continue;
+        }
+
+        if (skipNextServiceLine) {
+            // assume this is the `service` line
+            skipNextServiceLine = false;
+            continue;
+        }
+
+        newLines.push(line);
     }
 
-    await prisma.project.delete({
-        where: { id: project.id },
-    });
+    fs.writeFileSync(CONFIG_PATH, newLines.join("\n"), "utf8");
+}
 
-    return NextResponse.json({ success: true });
+// --- delete DNS record ---
+async function deleteCloudflareDNS(subdomain: string) {
+    const fullDomain = `${subdomain}.chanchhay.site`;
+
+    const listUrl = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?name=${fullDomain}`;
+
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${CF_API_TOKEN}`,
+    };
+
+    const records = await fetch(listUrl, { headers }).then((r) => r.json());
+
+    if (!records.result || records.result.length === 0) return;
+
+    const recordId = records.result[0].id;
+
+    await fetch(
+        `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/${recordId}`,
+        { method: "DELETE", headers }
+    );
+}
+
+export async function DELETE(
+    req: Request,
+    context: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { params } = context;
+        const { id } = await params;
+        const deploymentId = Number(id);
+
+        if (Number.isNaN(deploymentId)) {
+            return NextResponse.json(
+                { error: "Invalid project id" },
+                { status: 400 }
+            );
+        }
+
+        const deployment = await prisma.deployment.findUnique({
+            where: { id: deploymentId },
+        });
+
+        if (!deployment) {
+            return NextResponse.json(
+                { error: "Project not found" },
+                { status: 404 }
+            );
+        }
+
+        const subdomain = deployment.subdomain;
+        const folder = `/home/chanchhay/userdeploy/${subdomain}`;
+        const pm2Name = `launchly_${subdomain}`;
+
+        // Stop PM2 process
+        await execAsync(`pm2 delete ${pm2Name}`).catch(() => {});
+
+        // Remove folder
+        await execAsync(`rm -rf ${folder}`).catch(() => {});
+
+        // Remove DNS
+        await deleteCloudflareDNS(subdomain).catch(() => {});
+
+        // Remove ingress entry from config.yml
+        try {
+            removeIngressEntry(subdomain);
+            await execAsync("systemctl restart cloudflared").catch(() => {});
+        } catch (err) {
+            console.error("Failed to update cloudflared config:", err);
+        }
+
+        // Remove from database
+        await prisma.deployment.delete({
+            where: { id: deploymentId },
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Delete project error:", error);
+        return NextResponse.json(
+            { error: "Failed to delete project" },
+            { status: 500 }
+        );
+    }
 }

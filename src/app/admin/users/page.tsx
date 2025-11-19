@@ -45,10 +45,20 @@ export default function UsersPage() {
         <div>
             <h1 className="text-3xl font-bold mb-6">Users Management</h1>
 
+            <div className="flex justify-end mb-4">
+                <a
+                    href="/admin/users/create"
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                    + Create User
+                </a>
+            </div>
+
             <table className="w-full bg-white shadow rounded">
                 <thead className="border-b">
                     <tr>
                         <th className="p-3 text-left">ID</th>
+                        <th className="p-3 text-left">Name</th>
                         <th className="p-3 text-left">Email</th>
                         <th className="p-3 text-left">Plan</th>
                         <th className="p-3 text-left">Role</th>
@@ -60,6 +70,7 @@ export default function UsersPage() {
                     {users.map((u: any) => (
                         <tr key={u.id} className="border-b">
                             <td className="p-3">{u.id}</td>
+                            <td className="p-3">{u.name}</td>
                             <td className="p-3">{u.email}</td>
                             <td className="p-3">{u.plan}</td>
                             <td className="p-3">{u.role}</td>
