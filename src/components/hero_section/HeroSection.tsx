@@ -9,7 +9,7 @@ export default function HeroSection() {
     <section className="font-poppins relative flex flex-col-reverse items-center md:flex-row justify-between min-h-[90vh] px-6 md:px-20 overflow-hidden bg-linear-to-b from-(--background) to-(--background) dark:from-gray-950 dark:to-gray-900">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
         className="flex-1 text-center md:text-left z-10"
@@ -25,7 +25,7 @@ export default function HeroSection() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="px-6 py-3 bg-indigo-600 text-white font-semibold shadow-md rounded-xl transition hover:shadow-lg hover:bg-indigo-700 cursor-pointer"
-          onClick={() => router.push('/user')}        
+          onClick={() => router.push('/user')}
         >
           Get Started
         </motion.button>
