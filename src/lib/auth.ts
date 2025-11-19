@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -16,11 +16,15 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const email = credentials?.email?.trim().toLowerCase();
         const password = credentials?.password;
+
         if (!email || !password) return null;
+
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return null;
+
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return null;
+
         return {
           id: user.id,
           name: user.name,

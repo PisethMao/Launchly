@@ -1,169 +1,136 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { execSync, spawnSync } from "child_process";
-import path from "path";
-import fs from "fs";
-import AdmZip from "adm-zip";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
+import formidable from "formidable";
+import { exec } from "child_process";
 import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { Readable } from "stream";
 
-// Remove 'edge' runtime, use Node.js
-export const bodyParser = false;
+export const runtime = "nodejs";
 
-export async function POST(req: Request) {
-    try {
-        const formData = await req.formData();
+// Convert Next.js Request → Node IncomingMessage
+async function toNodeRequest(req: Request): Promise<any> {
+  const contentType = req.headers.get("content-type");
+  const contentLength = req.headers.get("content-length");
 
-        const file = formData.get("file") as File;
-        const subdomain = formData.get("subdomain") as string;
-        const tempSessionId = formData.get("tempSessionId") as string | null;
+  const body = Buffer.from(await req.arrayBuffer());
 
-        if (!file || !subdomain) {
-            return NextResponse.json(
-                { message: "Missing file or subdomain" },
-                { status: 400 }
-            );
-        }
+  const nodeReq: any = new Readable();
+  nodeReq._read = () => {};
+  nodeReq.push(body);
+  nodeReq.push(null);
 
-        // Save uploaded ZIP temporarily
-        const tempZipPath = `/tmp/${Date.now()}-${file.name}`;
-        const arrayBuffer = await file.arrayBuffer();
-        fs.writeFileSync(tempZipPath, Buffer.from(arrayBuffer));
+  nodeReq.headers = {
+    "content-type": contentType || "",
+    "content-length": contentLength || body.length.toString(),
+  };
 
-        console.log("📦 Uploaded ZIP saved:", tempZipPath);
-
-        // ------------------- 🛡 Step 1: Virus Scan -------------------
-        console.log("🛡 Scanning ZIP with ClamAV...");
-        const scanResult = scanForMalware(tempZipPath);
-        if (!scanResult) {
-            fs.unlinkSync(tempZipPath);
-            return NextResponse.json(
-                { message: "⚠️ Malware detected. Upload rejected." },
-                { status: 400 }
-            );
-        }
-
-        // ------------------- 🛡 Step 2: Extract Safely -------------------
-        const destPath = `/home/chanchhay/userdeploy/${subdomain}`;
-        if (fs.existsSync(destPath)) fs.rmSync(destPath, { recursive: true });
-        fs.mkdirSync(destPath, { recursive: true });
-
-        const zip = new AdmZip(tempZipPath);
-        zip.extractAllTo(destPath, true);
-
-        console.log("📦 ZIP extracted safely.");
-
-        // ------------------- 🛡 Step 3: Scan extracted files -------------------
-        console.log("🛡 Scanning extracted files...");
-        const extractScan = execSync(`clamscan -r ${destPath}`, {
-            encoding: "utf-8",
-        });
-        if (!extractScan.includes("Infected files: 0")) {
-            fs.rmSync(destPath, { recursive: true });
-            return NextResponse.json(
-                { message: "⚠️ Malware detected in extracted contents." },
-                { status: 400 }
-            );
-        }
-
-        // ------------------- 🧩 Step 4: Handle Project Path and Deploy -------------------
-        const projectPath = path.join(destPath, file.name.replace(".zip", ""));
-        console.log("📁 Project Path:", projectPath);
-
-        // Ensure we're in the correct directory before starting the project
-        execSync(`cd ${projectPath}`, { stdio: "inherit" });
-
-        // ------------------- 🧩 Run deploy script -------------------
-        const scriptPath = path.join(
-            process.cwd(),
-            "src",
-            "app",
-            "scripts",
-            "deploy_zip.sh"
-        );
-        const domain = "chanchhay.site";
-        const deploy = spawnSync("bash", [
-            scriptPath,
-            subdomain,
-            projectPath,
-            domain,
-            "static",
-        ]);
-
-        const output =
-            deploy.stdout.toString() + "\n" + deploy.stderr.toString();
-        console.log(output);
-
-        // ⛔️ FIX: Extract the port and URL from script output
-        const portMatch = output.match(/:::PORT:::(\d+):::/);
-        const liveUrlMatch = output.match(/:::URL:::(https:\/\/[^\s]+)::::/);
-
-        const port = portMatch ? Number(portMatch[1]) : null; // Ensure port is a number
-        const liveUrl = liveUrlMatch ? liveUrlMatch[1] : null;
-
-        if (!port || !liveUrl) {
-            console.error("❌ Deploy script output invalid", output);
-            return NextResponse.json(
-                { message: "Deploy script failed", output },
-                { status: 500 }
-            );
-        }
-
-        // ------------------- Save Deployment Information -------------------
-        const session = await getServerSession(authOptions);
-        const email = session?.user?.email || null;
-        let userId: string | null = null;
-
-        if (email) {
-            const user = await prisma.user.findUnique({ where: { email } });
-            userId = user?.id || null;
-        }
-
-        // Save deployment details to the database
-        try {
-            await prisma.deployment.create({
-                data: {
-                    repoUrl: "ZIP Upload",
-                    subdomain,
-                    port,
-                    buildPath: projectPath,
-                    projectType: "static",
-                    liveUrl,
-                    status: "running",
-                    userId,
-                    tempSessionId: userId ? null : tempSessionId,
-                },
-            });
-            console.log("✅ Deployment recorded in database");
-        } catch (error) {
-            console.error("❌ Error saving deployment:", error);
-            return NextResponse.json(
-                { message: "Database save failed", error },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json({
-            message: "✅ ZIP uploaded and deployed!",
-            liveUrl,
-        });
-    } catch (error: any) {
-        console.error("❌ Error in deploy ZIP:", error);
-        return NextResponse.json(
-            { message: error.message || "Unexpected error" },
-            { status: 500 }
-        );
-    }
+  return nodeReq;
 }
 
-function scanForMalware(filePath: string): boolean {
-    try {
-        const output = execSync(`clamscan ${filePath}`, { encoding: "utf-8" });
-        console.log("🛡 ClamAV result:", output);
-        return output.includes("Infected files: 0");
-    } catch (err) {
-        console.error("❌ ClamAV failed:", err);
-        return false;
+export async function POST(req: Request) {
+  try {
+    // ------------------------------------------------------------
+    // 1️⃣ Convert request & parse multipart data
+    // ------------------------------------------------------------
+    const nodeReq = await toNodeRequest(req);
+
+    const form = formidable({
+      multiples: false,
+      keepExtensions: true,
+      uploadDir: "/tmp",
+    });
+
+    const parsed = await new Promise<any>((resolve, reject) => {
+      form.parse(nodeReq, (err, fields, files) => {
+        if (err) return reject(err);
+        resolve({ fields, files });
+      });
+    });
+
+    const projectName = parsed.fields.projectName?.[0];
+    const file = parsed.files.file?.[0];
+
+    if (!projectName || !file) {
+      return NextResponse.json(
+        { message: "Project name and ZIP required" },
+        { status: 400 }
+      );
     }
+
+    const localZipPath = file.filepath;
+    const fileName = file.originalFilename || "upload.zip";
+
+    // ------------------------------------------------------------
+    // 2️⃣ Upload ZIP to VM
+    // ------------------------------------------------------------
+    const remoteZipPath = `/home/launchly/uploads/${Date.now()}_${fileName}`;
+
+    const scpCmd = `scp -i ${process.env.VM_PRIVATE_KEY_PATH} -o StrictHostKeyChecking=no ${localZipPath} ${process.env.VM_USER}@${process.env.VM_HOST}:${remoteZipPath}`;
+
+    await new Promise((resolve, reject) => {
+      exec(scpCmd, (error, stdout, stderr) => {
+        if (error) return reject(stderr || stdout);
+        resolve(stdout);
+      });
+    });
+
+    // ------------------------------------------------------------
+    // 3️⃣ Run deploy-zip.sh
+    // ------------------------------------------------------------
+    const sshCmd =
+      `ssh -i ${process.env.VM_PRIVATE_KEY_PATH} ` +
+      `-o StrictHostKeyChecking=no ` +
+      `${process.env.VM_USER}@${process.env.VM_HOST} ` +
+      `"bash /home/launchly/deploy-zip.sh '${remoteZipPath}' '${projectName}'"`;
+
+    const deployOutput: string = await new Promise((resolve, reject) => {
+      exec(sshCmd, (error, stdout, stderr) => {
+        if (error) return reject(stderr || stdout);
+        resolve(stdout + stderr);
+      });
+    });
+
+    console.log("🔥 ZIP DEPLOY OUTPUT:\n" + deployOutput);
+
+    const liveUrl = `https://${projectName}.piseth.space`;
+
+    // ------------------------------------------------------------
+    // 4️⃣ Get logged-in user
+    // ------------------------------------------------------------
+    const session = await getServerSession(authOptions);
+    const email = session?.user?.email || null;
+
+    let userId: string | null = null;
+    if (email) {
+      const user = await prisma.user.findUnique({ where: { email } });
+      userId = user?.id || null;
+    }
+
+    // ------------------------------------------------------------
+    // 5️⃣ Save deployment
+    // ------------------------------------------------------------
+    await prisma.deployment.create({
+      data: {
+        repoUrl: null,
+        subdomain: projectName,
+        tempSessionId: null,
+        port: null,
+        buildPath: "",
+        projectType: "static",
+        liveUrl,
+        status: "running",
+        userId,
+      },
+    });
+
+    return NextResponse.json({
+      message: "🎉 ZIP deployment started!",
+      liveUrl,
+    });
+  } catch (error: any) {
+    console.error("❌ ZIP Deployment Error:", error);
+    return NextResponse.json({ message: error.toString() }, { status: 500 });
+  }
 }
