@@ -39,6 +39,9 @@ export default function Page() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched data: ", data);
+        if (data.limitReached) {
+          showToast("Free plan limit reached. Upgrade tto Pro.", "error");
+        }
         const formatted = data.deployments.map((d: DeploymentRecord) => ({
           id: d.id,
           name: d.subdomain,
