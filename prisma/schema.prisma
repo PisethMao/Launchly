@@ -26,6 +26,7 @@ model Deployment {
   projectType   String
   status        String   @default("running")
   liveUrl       String?
+  projectName   String   @default("")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   userId        String?

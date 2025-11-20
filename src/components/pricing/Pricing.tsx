@@ -1,5 +1,3 @@
-import React from "react";
-
 type Feature = { label: string };
 type Plan = {
   id: "free" | "starter" | "pro" | "enterprise";
@@ -22,10 +20,10 @@ const plans: Plan[] = [
     ctaLabel: "Start free",
     features: [
       { label: "1 active project" },
-      { label: "One‑click deployments" },
+      { label: "One-click deployments" },
       { label: "Automatic HTTPS certificates" },
       { label: "Custom subdomain: yourproject.launchly.app" },
-      { label: "Real‑time build logs (basic view)" },
+      { label: "Real-time build logs (basic view)" },
       { label: "Isolated sandbox environment" },
       { label: "Community support" },
     ],
@@ -43,7 +41,7 @@ const plans: Plan[] = [
       { label: "Automatic SSL, zero maintenance" },
       { label: "Priority build queue (faster deploys)" },
       { label: "Basic analytics (traffic, uptime, history)" },
-      { label: "Email support (24–48h response)" },
+      { label: "Email support (24-48h response)" },
     ],
   },
   {
@@ -56,7 +54,7 @@ const plans: Plan[] = [
     highlighted: true,
     features: [
       { label: "Unlimited projects" },
-      { label: "Team collaboration (role‑based access)" },
+      { label: "Team collaboration (role-based access)" },
       { label: "Advanced analytics (performance, errors)" },
       { label: "Staging environments & preview deploys" },
       { label: "Optimized infrastructure (speed & scaling)" },
@@ -69,14 +67,14 @@ const plans: Plan[] = [
     price: "Custom",
     priceNote: "Starts around $200+/mo",
     description:
-      "For organizations needing SLAs, dedicated infrastructure, security, and white‑label options.",
+      "For organizations needing SLAs, dedicated infrastructure, security, and white-label options.",
     ctaLabel: "Contact sales",
     features: [
       { label: "Custom SLAs (uptime & performance)" },
-      { label: "Dedicated infrastructure (isolated, compliance‑ready)" },
+      { label: "Dedicated infrastructure (isolated, compliance-ready)" },
       { label: "Advanced security (SSO, audit logs, policies)" },
       { label: "Custom integrations (CI/CD, API access)" },
-      { label: "White‑labeling (brand Launchly as your own)" },
+      { label: "Whitelabeling (brand Launchly as your own)" },
       { label: "Dedicated account manager & 24/7 premium support" },
     ],
   },
@@ -87,8 +85,8 @@ function PlanCard({ plan }: { plan: Plan }) {
     <div
       className={`relative flex flex-col rounded-2xl border hover:transition-transform hover:scale-105 hover:duration-300 ${
         plan.highlighted
-          ? "border-black/10 shadow-xl shadow-black/5 bg-white"
-          : "border-gray-200 bg-white"
+          ? "border-black/10 shadow-xl shadow-black/5"
+          : "border-gray-200"
       }`}
     >
       {plan.highlighted && (
