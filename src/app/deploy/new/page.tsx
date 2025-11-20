@@ -31,6 +31,22 @@ export default function NewDeploymentPage() {
   }, []);
 
   const router = useRouter();
+  // ----------------------
+  // FREE PLAN LIMIT CHECK
+  // ----------------------
+  useEffect(() => {
+    async function checkLimit() {
+      const res = await fetch("/api/deployments/list");
+      const data = await res.json();
+
+      if (data.limitReached) {
+        router.push("/billing?upgradeRequired=1");
+        return;
+      }
+    }
+
+    checkLimit();
+  }, [router]);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error" | "warning";

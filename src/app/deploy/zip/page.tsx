@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Toast from "@/components/Toast";
 
@@ -15,6 +15,22 @@ export default function ZipDeployPage() {
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
   };
+  // ----------------------
+  // FREE PLAN LIMIT CHECK
+  // ----------------------
+  useEffect(() => {
+    async function checkLimit() {
+      const res = await fetch("/api/deployments/list");
+      const data = await res.json();
+
+      if (data.limitReached) {
+        window.location.href = "/billing?upgradeRequired=1";
+        return;
+      }
+    }
+
+    checkLimit();
+  }, []);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
