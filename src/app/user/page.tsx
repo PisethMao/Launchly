@@ -15,8 +15,7 @@ type DeploymentRecord = {
   createdAt: string;
 };
 
-export default function page() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function Page() {
   const router = useRouter();
   interface Deployment {
     id: string;
@@ -25,11 +24,9 @@ export default function page() {
     status: string;
     updatedAt: string;
   }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [deployments, setDeployments] = useState<Deployment[]>([]);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session, status } = useSession();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -37,12 +34,14 @@ export default function page() {
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
   };
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     fetch("/api/deployments/list")
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched data: ", data);
+        if (data.limitReached) {
+          showToast("Free plan limit reached. Upgrade tto Pro.", "error");
+        }
         const formatted = data.deployments.map((d: DeploymentRecord) => ({
           id: d.id,
           name: d.subdomain,
@@ -80,6 +79,12 @@ export default function page() {
             className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm hover:shadow-md active:scale-95"
           >
             + New Deployment
+          </Link>
+          <Link
+            href="/deploy/zip"
+            className="px-5 py-2.5 rounded-lg bg-green-600 text-white hover:bg-green-700 transition shadow-sm hover:shadow-md"
+          >
+            + Deploy ZIP File
           </Link>
           <Link
             href="/billing"
