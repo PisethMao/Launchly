@@ -92,6 +92,12 @@ export default function Page() {
           >
             Billing
           </Link>
+          <Link
+            href="/docs"
+            className="px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 transition active:scale-95"
+          >
+            Documentation
+          </Link>
           <button
             type="button"
             onClick={() => {
@@ -180,18 +186,6 @@ export default function Page() {
                 Updated {d.updatedAt}
               </p>
               <div className="mt-4 flex gap-2">
-                <Link
-                  href={`/deploy/${d.id}`}
-                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition active:scale-95"
-                >
-                  Manage
-                </Link>
-                <Link
-                  href={`/logs/${d.id}`}
-                  className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition active:scale-95"
-                >
-                  Logs
-                </Link>
                 <button
                   type="button"
                   onClick={async () => {
@@ -212,6 +206,12 @@ export default function Page() {
             </motion.div>
           ))}
         </div>
+        <Link
+          href="/docs"
+          className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm mt-6"
+        >
+          Need help? Check out the Documentation
+        </Link>
       </motion.section>
     </main>
   );
