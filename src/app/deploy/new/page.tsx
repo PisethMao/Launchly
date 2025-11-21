@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/Toast";
 import { getOrCreateTempSessionClient } from "@/utils/session/client";
+// import { Link } from "lucide-react"; // currently unused
 
 export default function NewDeploymentPage() {
     const [repoUrl, setRepoUrl] = useState("");
@@ -18,13 +19,17 @@ export default function NewDeploymentPage() {
     const [projectName, setProjectName] = useState("");
     const [tempSessionId, setTempSessionId] = useState<string | null>(null);
 
+    // 🔑 token + modal state
+    const [showTokenModal, setShowTokenModal] = useState(false);
+    const [personalToken, setPersonalToken] = useState("");
+    const [tokenError, setTokenError] = useState<string | null>(null);
+    const [isTokenSubmitting, setIsTokenSubmitting] = useState(false);
+
     useEffect(() => {
-        // Delay until after hydration completes
         const timer = setTimeout(() => {
             const id = getOrCreateTempSessionClient();
             setTempSessionId(id);
         }, 0);
-
         return () => clearTimeout(timer);
     }, []);
 
@@ -40,6 +45,7 @@ export default function NewDeploymentPage() {
     ) => {
         setToast({ message, type });
     };
+
     const validateRepositoryUrl = () => {
         if (!provider) {
             showToast("Please select a repository provider.", "error");
@@ -65,29 +71,103 @@ export default function NewDeploymentPage() {
         return true;
     };
 
-    const fetchBranches = async () => {
+    // 🔁 core function used both for normal + token-based branch fetch
+    const fetchBranchesInternal = async (token?: string) => {
         setSuccess(null);
-        if (!validateRepositoryUrl()) return;
-
+        setError(null);
         setLoading(true);
-        const res = await fetch("/api/branches", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ repoUrl }),
-        });
-        const data = await res.json();
 
-        setBranches(data.branches || []);
-        setLoading(false);
+        try {
+            const res = await fetch("/api/branches", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    repoUrl,
+                    personalToken: token || null, // backend can decide if needed
+                }),
+            });
 
-        if (data.branches?.length > 0) {
-            const count = data.branches.length;
-            setSuccess(
-                `✅ ${count} ${count === 1 ? "branch" : "branches"} found.`
-            );
-            setError(null);
-        } else {
-            showToast("No branches found in this repository.", "error");
+            const data = await res.json();
+
+            // 🛡️ backend can signal private repo in different ways.
+            // You can choose:
+            // - status 401/403
+            // - data.private === true
+            // - data.error === "PRIVATE_REPO"
+            if (
+                res.status === 401 ||
+                res.status === 403 ||
+                data.private === true ||
+                data.error === "PRIVATE_REPO"
+            ) {
+                // show modal & ask token
+                setShowTokenModal(true);
+                setLoading(false);
+
+                if (!token) {
+                    // first time detection
+                    showToast(
+                        "This repository appears to be private. Please provide an access token.",
+                        "warning"
+                    );
+                } else {
+                    // token provided but still unauthorized
+                    setTokenError("Token rejected. Please check your token or scopes.");
+                }
+                return;
+            }
+
+            if (!res.ok) {
+                setError(data.error || "Failed to fetch branches.");
+                setBranches([]);
+                setLoading(false);
+                return;
+            }
+
+            const branchList = data.branches || [];
+            setBranches(branchList);
+
+            if (branchList.length > 0) {
+                const count = branchList.length;
+                setSuccess(
+                    `✅ ${count} ${count === 1 ? "branch" : "branches"} found.`
+                );
+            } else {
+                setError("No branches found in this repository.");
+                setBranches([]);
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Unexpected error while fetching branches.");
+            setBranches([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchBranches = async () => {
+        if (!validateRepositoryUrl()) return;
+        // first attempt: no token
+        await fetchBranchesInternal();
+    };
+
+    // 🔑 called from modal when user submits token
+    const handleTokenSubmit = async () => {
+        if (!personalToken.trim()) {
+            setTokenError("Token is required for private repositories.");
+            return;
+        }
+        setTokenError(null);
+        setIsTokenSubmitting(true);
+
+        await fetchBranchesInternal(personalToken.trim());
+
+        setIsTokenSubmitting(false);
+
+        // If branches were successfully loaded, close modal
+        if (branches.length > 0 && !error) {
+            setShowTokenModal(false);
+            showToast("Branches loaded using your token.", "success");
         }
     };
 
@@ -102,9 +182,9 @@ export default function NewDeploymentPage() {
         }
 
         const branchSelect = document.querySelector(
-            "select"
+            "#branch-select"
         ) as HTMLSelectElement;
-        const branch = branchSelect?.value || "main";
+        const branch = branchSelect?.value || selectedBranch || "main";
 
         showToast(
             `🚀 Deployment started\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`,
@@ -112,26 +192,34 @@ export default function NewDeploymentPage() {
         );
 
         setLoading(true);
-        const res = await fetch("/api/deploy", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                repoUrl,
-                subdomain: projectName,
-                branch,
-                tempSessionId,
-            }),
-        });
-        const data = await res.json();
+        try {
+            const res = await fetch("/api/deploy", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    repoUrl,
+                    subdomain: projectName,
+                    branch,
+                    tempSessionId,
+                    personalToken: personalToken || null, // used only if needed
+                }),
+            });
+            const data = await res.json();
 
-        if (res.ok) {
-            setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
-            setTimeout(() => router.push("/user"), 1500);
-        } else {
-            showToast(`⚠️ Deployment failed: ${data.error}`, "error");
+            if (res.ok) {
+                setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
+                setTimeout(() => router.push("/user"), 3000);
+            } else {
+                showToast(`⚠️ Deployment failed: ${data.error}`, "error");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Deployment failed due to an unexpected error.", "error");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
+
     return (
         <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
             <motion.div
@@ -148,6 +236,7 @@ export default function NewDeploymentPage() {
                     repository details to deploy
                 </p>
             </motion.div>
+
             <AnimatePresence>
                 {toast && (
                     <Toast
@@ -157,6 +246,8 @@ export default function NewDeploymentPage() {
                     />
                 )}
             </AnimatePresence>
+
+            {/* Provider selection card */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -169,9 +260,9 @@ export default function NewDeploymentPage() {
                     <button
                         type="button"
                         onClick={() => setProvider("github")}
-                        className={`flex flex-col items-center justify-center rounded-lg py-4 transition cursor-pointer hover:shadow hover:border-gray-500 focus:outline-none focus:border-black focus:ring-2 focus:ring-black dark:focus:ring-black ${
+                        className={`flex flex-col items-center justify-center rounded-lg py-4 border transition cursor-pointer hover:shadow hover:border-gray-500 focus:outline-none focus:border-black focus:ring-2 focus:ring-black dark:focus:ring-black ${
                             provider === "github"
-                                ? "dark:bg-indigo-900/30"
+                                ? "dark:bg-indigo-900/30 border-indigo-500"
                                 : "border-gray-300 dark:border-gray-600"
                         }`}
                     >
@@ -187,9 +278,9 @@ export default function NewDeploymentPage() {
                     <button
                         type="button"
                         onClick={() => setProvider("gitlab")}
-                        className={`flex flex-col items-center justify-center rounded-lg py-4 transition cursor-pointer hover:shadow hover:border-orange-300 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 ${
+                        className={`flex flex-col items-center justify-center rounded-lg py-4 border transition cursor-pointer hover:shadow hover:border-orange-300 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 ${
                             provider === "gitlab"
-                                ? "dark:bg-indigo-900/30"
+                                ? "dark:bg-indigo-900/30 border-orange-500"
                                 : "border-gray-300 dark:border-gray-600"
                         }`}
                     >
@@ -206,6 +297,8 @@ export default function NewDeploymentPage() {
                     </button>
                 </div>
             </motion.div>
+
+            {/* Repo URL + Fetch branches */}
             <label htmlFor="" className="font-medium text-sm">
                 Repository URL <span className="text-red-500">*</span>
             </label>
@@ -225,16 +318,16 @@ export default function NewDeploymentPage() {
             >
                 {loading ? "Fetching branches..." : "Fetch Branches"}
             </button>
+
+            {/* Branch select */}
             <div className="mt-8">
                 <label htmlFor="" className="font-medium text-sm">
                     Branch <span className="text-red-500">*</span>
                 </label>
                 {branches.length === 0 && (
                     <select
-                        name=""
-                        id=""
                         disabled
-                        className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 text-gray-500 cursor-not-allowed"
+                        className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 text-gray-500 cursor-not-allowed bg-gray-50 dark:bg-gray-900"
                     >
                         <option>
                             Click &quot;Fetch Branches&quot; first...
@@ -243,7 +336,6 @@ export default function NewDeploymentPage() {
                 )}
                 {branches.length > 0 && (
                     <select
-                        name=""
                         id="branch-select"
                         className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
                         value={selectedBranch}
@@ -256,6 +348,7 @@ export default function NewDeploymentPage() {
                         ))}
                     </select>
                 )}
+
                 {error ? (
                     <p className="mt-2 text-sm text-orange-500 flex items-center gap-1">
                         ⚠️ {error}
@@ -270,6 +363,8 @@ export default function NewDeploymentPage() {
                         Branches&quot;
                     </p>
                 )}
+
+                {/* Project name */}
                 <div className="mt-6">
                     <label className="block text-sm font-medium mb-1">
                         Project Name <span className="text-red-500">*</span>
@@ -282,6 +377,8 @@ export default function NewDeploymentPage() {
                         className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
                     />
                 </div>
+
+                {/* Policy checkbox */}
                 <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
                     <input type="checkbox" className="w-4 h-4" />
                     <span>
@@ -300,6 +397,8 @@ export default function NewDeploymentPage() {
                         </button>
                     </span>
                 </div>
+
+                {/* Deploy button */}
                 <button
                     type="button"
                     onClick={handleDeploy}
@@ -308,6 +407,89 @@ export default function NewDeploymentPage() {
                     Deploy Now
                 </button>
             </div>
+
+            {/* 🔒 Token Modal */}
+            <AnimatePresence>
+                {showTokenModal && (
+                    <motion.div
+                        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                            className="w-full max-w-md rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-2xl relative"
+                        >
+                            <h2 className="text-lg font-semibold mb-2">
+                                Private Repository Detected
+                            </h2>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                This repository appears to be private. Enter a{" "}
+                                <span className="font-medium">
+                                    personal access token
+                                </span>{" "}
+                                with read access. We{" "}
+                                <span className="font-semibold">
+                                    do not store
+                                </span>{" "}
+                                your token; it&apos;s used only for this
+                                operation.
+                            </p>
+
+                            <label className="block text-sm font-medium mb-1">
+                                Personal Access Token
+                            </label>
+                            <input
+                                type="password"
+                                value={personalToken}
+                                onChange={(e) => {
+                                    setPersonalToken(e.target.value);
+                                    setTokenError(null);
+                                }}
+                                placeholder={
+                                    provider === "github"
+                                        ? "ghp_xxxxxxxxxxxxxxxxx"
+                                        : "glpat-xxxxxxxxxxxxxxxx"
+                                }
+                                className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500 mb-2"
+                            />
+
+                            {tokenError && (
+                                <p className="text-xs text-red-500 mb-2">
+                                    {tokenError}
+                                </p>
+                            )}
+
+                            <div className="flex justify-end gap-2 mt-4">
+                                <button
+                                    type="button"
+                                    className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                    onClick={() => {
+                                        setShowTokenModal(false);
+                                        setPersonalToken("");
+                                        setTokenError(null);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={isTokenSubmitting}
+                                    className="px-4 py-1.5 rounded-lg text-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-60"
+                                    onClick={handleTokenSubmit}
+                                >
+                                    {isTokenSubmitting
+                                        ? "Checking..."
+                                        : "Use Token"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

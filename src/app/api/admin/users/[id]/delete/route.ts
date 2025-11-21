@@ -17,11 +17,21 @@ function removeIngressEntry(subdomain: string) {
     const config = fs.readFileSync(CONFIG_PATH, "utf8");
     const lines = config.split("\n");
 
-    const newLines = lines.filter(
-        (line) =>
-            !line.includes(`hostname: ${hostname}`) &&
-            !line.includes(`service: http://localhost`)
-    );
+    // Remove the entire ingress block for this subdomain (hostname + service lines)
+    const newLines: string[] = [];
+    let skipNext = false;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(`hostname: ${hostname}`)) {
+            skipNext = true; // Skip this line and the next one (service line)
+            continue;
+        }
+        if (skipNext && lines[i].includes("service:")) {
+            skipNext = false; // Skip the service line
+            continue;
+        }
+        newLines.push(lines[i]);
+    }
 
     fs.writeFileSync(CONFIG_PATH, newLines.join("\n"), "utf8");
 }
@@ -65,12 +75,10 @@ export async function DELETE(
             const folder = `/home/chanchhay/userdeploy/${d.subdomain}`;
 
             // Stop PM2
-            await execAsync(`pm2 delete launchly_${d.subdomain}`).catch(
-                () => {}
-            );
+            await execAsync(`pm2 delete launchly_${d.subdomain}`);
 
             // Delete folder
-            await execAsync(`rm -rf ${folder}`).catch(() => {});
+            await execAsync(`rm -rf ${folder}`);
 
             // Delete DNS
             await deleteCloudflareDNS(d.subdomain);
@@ -80,13 +88,13 @@ export async function DELETE(
         }
 
         // Restart cloudflared so changes apply
-        await execAsync("pm2 restart cloudflare-tunnel");
+        await execAsync("pm2 restart cloudflare-tunnel >/dev/null 2>&1 &");
 
         // Delete DB entries
         await prisma.deployment.deleteMany({ where: { userId: id } });
         await prisma.user.delete({ where: { id } });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
         console.error("Delete user error:", error);
         return NextResponse.json(

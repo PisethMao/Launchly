@@ -92,13 +92,19 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-10 md:mt-14 flex justify-center"
+          className="mt-10 md:mt-14 flex justify-center gap-4"
         >
           <Link
             href="/deploy/new"
             className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-white font-medium shadow-md hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
-            Deploy your first site
+            Github/Gitlab Deploy
+          </Link>
+          <Link
+            href="/deploy-zip"
+            className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-white font-medium shadow-md hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          >
+            Zip Deploy
           </Link>
         </motion.div>
       </div>

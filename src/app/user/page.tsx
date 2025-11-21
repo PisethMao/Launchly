@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
+import { baseUrl } from "@/utils/urls";
 
 type DeploymentRecord = {
     id: string;
@@ -30,28 +31,30 @@ export default function page() {
     const { data: session, status } = useSession();
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        fetch("/api/deployments/list")
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("Fetched data: ", data);
-                const formatted = data.deployments.map(
-                    (d: DeploymentRecord) => ({
-                        id: d.id,
-                        name: d.subdomain,
-                        liveUrl: d.liveUrl
-                            ? `${d.liveUrl}`
-                            : "http://not-deployed-yet",
-                        status: d.status === "running" ? "Healthy" : "Building",
-                        updatedAt: new Date(d.createdAt).toLocaleString(),
-                    })
-                );
-                setDeployments(formatted);
-            })
-            .catch(() => setDeployments([]));
-    }, [status, router]);
-    if (status === "loading") {
-        return null;
-    }
+        const load = () => {
+            fetch("/api/deployments/list", { cache: "no-store" })
+                .then((res) => res.json())
+                .then((data) => {
+                    const formatted = data.deployments.map(
+                        (d: DeploymentRecord) => ({
+                            id: d.id,
+                            name: d.subdomain,
+                            liveUrl: d.liveUrl ?? "http://not-deployed-yet",
+                            status:
+                                d.status === "running" ? "Healthy" : "Building",
+                            updatedAt: new Date(d.createdAt).toLocaleString(),
+                        })
+                    );
+                    setDeployments(formatted);
+                });
+        };
+
+        load(); // first fetch
+        const interval = setInterval(load, 3000); // every 5 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <main className="font-poppins max-w-6xl mx-auto px-6 py-12">
             <motion.header
@@ -89,7 +92,7 @@ export default function page() {
                     <button
                         type="button"
                         onClick={() => {
-                            signOut({ callbackUrl: "/" });
+                            signOut({ callbackUrl: `${baseUrl}` });
                         }}
                         className="px-5 py-2.5 cursor-pointer rounded-lg border border-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 transition active:scale-95"
                     >

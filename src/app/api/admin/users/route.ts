@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/adminAuth";
 
-export async function GET() {
-    const admin = await verifyAdmin();
+export async function GET(req: Request) {
+    const admin = await verifyAdmin(req);
     if (!admin)
         return NextResponse.json(
             { error: "Unauthorized" },

@@ -116,7 +116,8 @@ export default function NewZipDeploymentPage() {
 
         if (res.ok) {
             showToast("ZIP uploaded and verified!", "success");
-            setTimeout(() => router.push("/user"), 1500);
+            setTimeout(() => router.push("/user"), 1000);
+            setTimeout(() => router.refresh(), 50);
         } else {
             showToast(`⚠️ Deployment failed: ${data.message}`, "error");
         }

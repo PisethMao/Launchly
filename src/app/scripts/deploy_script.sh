@@ -74,7 +74,8 @@ curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/
 -H "Content-Type: application/json" \
 --data "{\"type\":\"CNAME\",\"name\":\"$HOSTNAME\",\"content\":\"$CONTENT\",\"proxied\":true}" >/dev/null
 
-pm2 restart cloudflare-tunnel
+pm2 restart cloudflare-tunnel >/dev/null 2>&1 &
+sleep 5
 
 ### ≡ Output
 URL="https://$HOSTNAME"

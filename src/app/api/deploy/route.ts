@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { execSync, spawnSync } from "child_process";
+import { exec } from "child_process";
+import { promisify } from "util";
 import path from "path";
 import fs from "fs";
 import { buildCloneUrl } from "../branches/route";
@@ -8,9 +9,12 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+const execAsync = promisify(exec);
+
 export async function POST(req: Request) {
     try {
-        const { repoUrl, subdomain, tempSessionId } = await req.json();
+        const { repoUrl, subdomain, tempSessionId, personalToken } = await req.json();
+
         if (!repoUrl || !subdomain) {
             return NextResponse.json(
                 { message: "Repo URL and subdomain required" },
@@ -18,74 +22,120 @@ export async function POST(req: Request) {
             );
         }
 
-        // Clone repo
-        // const repoName =
-        //     repoUrl.split("/").pop()?.replace(".git", "") || "project";
+        // Start deployment in background and return immediately
+        deployAsync(repoUrl, subdomain, tempSessionId, personalToken).catch(
+            (error) => {
+                console.error("❌ Background deployment error:", error);
+            }
+        );
+
+        // Return success immediately to UI
+        return NextResponse.json(
+            {
+                success: true,
+                message: "✅ Deployment started! Please wait...",
+                subdomain,
+            },
+            { status: 200 }
+        );
+    } catch (error: any) {
+        console.error("❌ Request error:", error);
+        return NextResponse.json(
+            { success: false, error: error.message || "Unexpected error" },
+            { status: 500 }
+        );
+    }
+}
+
+// Separate async function for background deployment
+async function deployAsync(
+    repoUrl: string,
+    subdomain: string,
+    tempSessionId: string,
+    personalToken: string | null
+) {
+    try {
+        // -------------------------------
+        // 🧹 Clean old project directory
+        // -------------------------------
         const projectPath = path.join("/home/chanchhay/userdeploy", subdomain);
-        if (fs.existsSync(projectPath))
+        if (fs.existsSync(projectPath)) {
             fs.rmSync(projectPath, { recursive: true, force: true });
+        }
 
-        const finalUrl = buildCloneUrl(repoUrl);
-        execSync(`git clone --depth=1 --filter=blob:none ${finalUrl} ${projectPath}`, {
-            stdio: "inherit",
-        });
+        // -------------------------------
+        // 🔐 Build authenticated clone URL
+        // -------------------------------
+        const finalUrl = buildCloneUrl(repoUrl, personalToken || undefined);
+        console.log("🔗 Final clone URL:", finalUrl.replace(/:.+@/, ":***@"));
 
-        // Detect project type
+        // -------------------------------
+        // 📥 Clone project
+        // -------------------------------
+        await execAsync(
+            `git clone --depth=1 --filter=blob:none ${finalUrl} ${projectPath}`,
+            {
+                env: {
+                    ...process.env,
+                    GIT_TERMINAL_PROMPT: "0",
+                },
+            }
+        );
+
+        // -------------------------------
+        // 🔎 Detect project type
+        // -------------------------------
         let projectType = "static";
         const pkgPath = path.join(projectPath, "package.json");
+
         if (fs.existsSync(pkgPath)) {
             const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+
             if (pkg.dependencies?.next) projectType = "next";
             else if (pkg.dependencies?.vite) projectType = "vite";
             else if (pkg.scripts?.build) projectType = "react";
         }
 
-        // Build if needed
+        // -------------------------------
+        // 🛠️ Build project (if needed)
+        // -------------------------------
         if (projectType !== "static") {
-            execSync(`cd ${projectPath} && npm install --legacy-peer-deps`, {
-                stdio: "inherit",
-            });
+            await execAsync(
+                `cd ${projectPath} && npm install --legacy-peer-deps`
+            );
 
             try {
-                execSync(`cd ${projectPath} && npm run build`, { stdio: "inherit" });
+                await execAsync(`cd ${projectPath} && npm run build`);
             } catch {
                 console.log("⚠️ Build failed, fallback to static.");
             }
         }
 
-        // Run deploy script
+        // -------------------------------
+        // 🚀 Deploy using script
+        // -------------------------------
         const scriptPath = path.join(process.cwd(), "src", "app", "scripts", "deploy_script.sh");
         const domain = "chanchhay.site";
 
-        const deploy = spawnSync(
-            "bash",
-            [scriptPath, subdomain, projectPath, domain, projectType],
-            { encoding: "utf-8" }
+        const { stdout, stderr } = await execAsync(
+            `bash ${scriptPath} ${subdomain} ${projectPath} ${domain} ${projectType}`
         );
 
-        const output = deploy.stdout + "\n" + deploy.stderr;
+        const output = stdout + "\n" + stderr;
         console.log("🔥 RAW SCRIPT OUTPUT:\n", output);
 
-        // ⛔️ FIX #1 — Match triple-colon markers ONLY
         const portMatch = output.match(/:::PORT:::(\d+):::/);
         const urlMatch = output.match(/:::URL:::(https:\/\/[^\s]+):::/);
 
         const port = portMatch ? Number(portMatch[1]) : null;
         const liveUrl = urlMatch ? urlMatch[1] : null;
 
-        if (!port) {
-            console.error("❌ MISSING PORT, RAW OUTPUT BELOW:");
-            console.error(output);
-            throw new Error("Deploy script did not return a PORT");
-        }
+        if (!port) throw new Error("Deploy script did not return a PORT");
+        if (!liveUrl) throw new Error("Deploy script did not return a URL");
 
-        if (!liveUrl) {
-            console.error("❌ MISSING URL, RAW OUTPUT BELOW:");
-            console.error(output);
-            throw new Error("Deploy script did not return a URL");
-        }
-
-        // ⛔️ FIX #2 — Correct session call in route handlers
+        // -------------------------------
+        // 🧑‍💻 Attach deployment to user
+        // -------------------------------
         const session = await getServerSession(authOptions);
         const email = session?.user?.email || null;
 
@@ -95,7 +145,9 @@ export async function POST(req: Request) {
             userId = user?.id || null;
         }
 
-        // Save deployment
+        // -------------------------------
+        // 📝 Save deployment record
+        // -------------------------------
         await prisma.deployment.create({
             data: {
                 repoUrl,
@@ -110,16 +162,27 @@ export async function POST(req: Request) {
             },
         });
 
-        return NextResponse.json({
-            message: "✅ Deployed successfully!",
-            url: liveUrl,
-        });
-
+        console.log(`✅ Deployment completed for ${subdomain}: ${liveUrl}`);
     } catch (error: any) {
-        console.error("❌ Deployment error:", error);
-        return NextResponse.json(
-            { message: error.message || "Unexpected deployment error" },
-            { status: 500 }
-        );
+        console.error(`❌ Deployment error for ${subdomain}:`, error);
+
+        // Optionally create a failed deployment record
+        try {
+            await prisma.deployment.create({
+                data: {
+                    repoUrl,
+                    subdomain,
+                    port: null,
+                    buildPath: "",
+                    projectType: "static",
+                    liveUrl: "",
+                    status: "failed",
+                    userId: null,
+                    tempSessionId,
+                },
+            });
+        } catch (dbError) {
+            console.error("Failed to record deployment failure:", dbError);
+        }
     }
 }

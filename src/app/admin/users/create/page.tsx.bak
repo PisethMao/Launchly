@@ -1,0 +1,119 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function CreateUserPage() {
+    const router = useRouter();
+
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        password: "",
+        role: "USER",
+        plan: "Free",
+    });
+
+    const [error, setError] = useState("");
+
+    const handleChange = (e: any) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    async function handleSubmit(e: any) {
+        e.preventDefault();
+        setError("");
+
+        const res = await fetch("/api/admin/users/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            setError(data.error || "Failed to create user");
+            return;
+        }
+
+        router.push("/admin/dashboard");
+    }
+
+    return (
+        <div className="max-w-lg mx-auto p-6 bg-white shadow rounded">
+            <h1 className="text-3xl font-bold mb-6">Create New User</h1>
+
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="block mb-1">Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        className="w-full border p-2 rounded"
+                        value={form.name}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div>
+                    <label className="block mb-1">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        className="w-full border p-2 rounded"
+                        value={form.email}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div>
+                    <label className="block mb-1">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        className="w-full border p-2 rounded"
+                        value={form.password}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div>
+                    <label className="block mb-1">Role</label>
+                    <select
+                        name="role"
+                        className="w-full border p-2 rounded"
+                        value={form.role}
+                        onChange={handleChange}
+                    >
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block mb-1">Plan</label>
+                    <select
+                        name="plan"
+                        className="w-full border p-2 rounded"
+                        value={form.plan}
+                        onChange={handleChange}
+                    >
+                        <option value="Free">Free</option>
+                        <option value="Pro">Pro</option>
+                    </select>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+                >
+                    Create User
+                </button>
+            </form>
+        </div>
+    );
+}

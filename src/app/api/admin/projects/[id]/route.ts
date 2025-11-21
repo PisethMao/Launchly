@@ -112,7 +112,7 @@ export async function DELETE(
         // Remove ingress entry from config.yml
         try {
             removeIngressEntry(subdomain);
-            await execAsync("systemctl restart cloudflared").catch(() => {});
+            await execAsync("pm2 restart cloudflare-tunnel >/dev/null 2>&1 &").catch(() => {});
         } catch (err) {
             console.error("Failed to update cloudflared config:", err);
         }
