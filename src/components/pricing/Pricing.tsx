@@ -1,5 +1,3 @@
-import React from "react";
-
 type Feature = { label: string };
 type Plan = {
   id: "free" | "starter" | "pro" | "enterprise";
@@ -22,10 +20,10 @@ const plans: Plan[] = [
     ctaLabel: "Start free",
     features: [
       { label: "1 active project" },
-      { label: "One‑click deployments" },
+      { label: "One-click deployments" },
       { label: "Automatic HTTPS certificates" },
       { label: "Custom subdomain: yourproject.launchly.app" },
-      { label: "Real‑time build logs (basic view)" },
+      { label: "Real-time build logs (basic view)" },
       { label: "Isolated sandbox environment" },
       { label: "Community support" },
     ],
@@ -43,7 +41,7 @@ const plans: Plan[] = [
       { label: "Automatic SSL, zero maintenance" },
       { label: "Priority build queue (faster deploys)" },
       { label: "Basic analytics (traffic, uptime, history)" },
-      { label: "Email support (24–48h response)" },
+      { label: "Email support (24-48h response)" },
     ],
   },
   {
@@ -56,7 +54,7 @@ const plans: Plan[] = [
     highlighted: true,
     features: [
       { label: "Unlimited projects" },
-      { label: "Team collaboration (role‑based access)" },
+      { label: "Team collaboration (role-based access)" },
       { label: "Advanced analytics (performance, errors)" },
       { label: "Staging environments & preview deploys" },
       { label: "Optimized infrastructure (speed & scaling)" },
@@ -69,14 +67,14 @@ const plans: Plan[] = [
     price: "Custom",
     priceNote: "Starts around $200+/mo",
     description:
-      "For organizations needing SLAs, dedicated infrastructure, security, and white‑label options.",
+      "For organizations needing SLAs, dedicated infrastructure, security, and white-label options.",
     ctaLabel: "Contact sales",
     features: [
       { label: "Custom SLAs (uptime & performance)" },
-      { label: "Dedicated infrastructure (isolated, compliance‑ready)" },
+      { label: "Dedicated infrastructure (isolated, compliance-ready)" },
       { label: "Advanced security (SSO, audit logs, policies)" },
       { label: "Custom integrations (CI/CD, API access)" },
-      { label: "White‑labeling (brand Launchly as your own)" },
+      { label: "White-labeling (brand Launchly as your own)" },
       { label: "Dedicated account manager & 24/7 premium support" },
     ],
   },
@@ -87,8 +85,8 @@ function PlanCard({ plan }: { plan: Plan }) {
     <div
       className={`relative flex flex-col rounded-2xl border hover:transition-transform hover:scale-105 hover:duration-300 ${
         plan.highlighted
-          ? "border-black/10 shadow-xl shadow-black/5 bg-white"
-          : "border-gray-200 bg-white"
+          ? "border-gray-200 shadow-xl shadow-black/5"
+          : "border-gray-200"
       }`}
     >
       {plan.highlighted && (
@@ -138,7 +136,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         {/* Optional: tiny usage disclaimers or overage details */}
         {plan.id !== "free" && plan.id !== "enterprise" && (
           <p className="mt-2 text-xs text-gray-500">
-            Prices are per account, not per seat. Usage‑based add‑ons available.
+            Prices are per account, not per seat. Usage-based add-ons available.
           </p>
         )}
       </div>
@@ -152,14 +150,14 @@ export default function Pricing() {
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight">Pricing</h2>
         <p className="mt-3 text-gray-600">
-          Deploy websites effortlessly with one‑click automatic deployments,
+          Deploy websites effortlessly with one-click automatic deployments,
           SSL, and domains built in. Pick a plan that grows with you.
         </p>
       </div>
 
-      {/* Optional: monthly / yearly switcher (non‑functional placeholder) */}
+      {/* Optional: monthly / yearly switcher (non-functional placeholder) */}
       <div className="mt-8 flex justify-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white p-1 text-xs">
+        <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 p-1 text-xs">
           <button className="rounded-full px-3 py-1 font-semibold bg-indigo-600 text-white">
             Monthly
           </button>
@@ -191,7 +189,7 @@ export default function Pricing() {
           </p>
         </div>
         <div className="rounded-xl border border-gray-200 p-4 text-sm">
-          <p className="font-semibold">Real‑time visibility</p>
+          <p className="font-semibold">Real-time visibility</p>
           <p className="mt-1 text-gray-600">
             Transparent build logs and environment isolation for every deploy.
           </p>
