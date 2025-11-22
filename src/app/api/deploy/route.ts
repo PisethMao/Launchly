@@ -10,12 +10,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 const execAsync = promisify(exec);
+const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL!;
 
 export async function POST(req: Request) {
     try {
-        const { repoUrl, subdomain, tempSessionId, personalToken } = await req.json();
+        const { repoUrl, subdomain, tempSessionId, personalToken, branch } =
+            await req.json();
 
-        if (!repoUrl || !subdomain) {
+        if (!repoUrl || !subdomain || !branch) {
             return NextResponse.json(
                 { message: "Repo URL and subdomain required" },
                 { status: 400 }
@@ -23,11 +25,15 @@ export async function POST(req: Request) {
         }
 
         // Start deployment in background and return immediately
-        deployAsync(repoUrl, subdomain, tempSessionId, personalToken).catch(
-            (error) => {
-                console.error("❌ Background deployment error:", error);
-            }
-        );
+        deployAsync(
+            repoUrl,
+            subdomain,
+            tempSessionId,
+            personalToken,
+            branch
+        ).catch((error) => {
+            console.error("❌ Background deployment error:", error);
+        });
 
         // Return success immediately to UI
         return NextResponse.json(
@@ -52,28 +58,21 @@ async function deployAsync(
     repoUrl: string,
     subdomain: string,
     tempSessionId: string,
-    personalToken: string | null
+    personalToken: string | null,
+    branch: string
 ) {
     try {
-        // -------------------------------
-        // 🧹 Clean old project directory
-        // -------------------------------
         const projectPath = path.join("/home/chanchhay/userdeploy", subdomain);
         if (fs.existsSync(projectPath)) {
             fs.rmSync(projectPath, { recursive: true, force: true });
         }
 
-        // -------------------------------
-        // 🔐 Build authenticated clone URL
-        // -------------------------------
         const finalUrl = buildCloneUrl(repoUrl, personalToken || undefined);
         console.log("🔗 Final clone URL:", finalUrl.replace(/:.+@/, ":***@"));
 
-        // -------------------------------
-        // 📥 Clone project
-        // -------------------------------
+        // --- Clone selected branch ---
         await execAsync(
-            `git clone --depth=1 --filter=blob:none ${finalUrl} ${projectPath}`,
+            `git clone --depth=1 --branch ${branch} --single-branch --filter=blob:none ${finalUrl} ${projectPath}`,
             {
                 env: {
                     ...process.env,
@@ -81,6 +80,8 @@ async function deployAsync(
                 },
             }
         );
+
+        // ... continues unchanged
 
         // -------------------------------
         // 🔎 Detect project type
@@ -114,7 +115,22 @@ async function deployAsync(
         // -------------------------------
         // 🚀 Deploy using script
         // -------------------------------
-        const scriptPath = path.join(process.cwd(), "src", "app", "scripts", "deploy_script.sh");
+        const scriptPath = path.join(
+            "/home",
+            "chanchhay",
+            "Documents",
+            "LinuxBackup",
+            "Documents",
+            "ISTAD",
+            "Semister2",
+            "linuxFinalProject",
+            "Launchly",
+            "Launchly",
+            "src",
+            "app",
+            "scripts",
+            "deploy_script.sh"
+        );
         const domain = "chanchhay.site";
 
         const { stdout, stderr } = await execAsync(
@@ -163,6 +179,35 @@ async function deployAsync(
         });
 
         console.log(`✅ Deployment completed for ${subdomain}: ${liveUrl}`);
+
+        // -------------------------
+        // 🔔 Notify n8n about deployment
+        // -------------------------
+        try {
+            const session = await getServerSession(authOptions);
+            const notifyUserId = (session as any)?.user?.id ?? userId;
+
+            await fetch(N8N_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    event: "NEW_DEPLOYMENT",
+                    user: {
+                        id: notifyUserId,
+                        email: session?.user?.email || null,
+                    },
+                    projectName:
+                        repoUrl.split("/").pop()?.replace(".git", "") ||
+                        subdomain,
+                    subdomain,
+                    liveUrl,
+                    status: "running",
+                    timestamp: new Date().toISOString(),
+                }),
+            });
+        } catch (err) {
+            console.error("Failed to notify n8n about deployment:", err);
+        }
     } catch (error: any) {
         console.error(`❌ Deployment error for ${subdomain}:`, error);
 

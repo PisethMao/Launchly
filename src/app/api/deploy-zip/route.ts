@@ -7,6 +7,7 @@ import AdmZip from "adm-zip";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL!;
 
 export const runtime = "nodejs";
 export const bodyParser = false;
@@ -191,6 +192,33 @@ async function deployInBackground(
 
         console.log("🎉 Deployment saved!");
         console.log("🌍 LIVE URL:", liveUrl);
+
+        // -------------------------
+        // 🔔 Notify n8n about deployment
+        // -------------------------
+        try {
+            const session = await getServerSession(authOptions);
+            const notifyUserId = (session as any)?.user?.id ?? userId;
+
+            await fetch(N8N_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    event: "NEW_DEPLOYMENT",
+                    user: {
+                        id: notifyUserId,
+                        email: session?.user?.email || null,
+                    },
+                    projectName: "ZIP Upload",
+                    subdomain,
+                    liveUrl,
+                    status: "running",
+                    timestamp: new Date().toISOString(),
+                }),
+            });
+        } catch (err) {
+            console.error("Failed to notify n8n about deployment:", err);
+        }
     } catch (err) {
         console.error("💥 deployInBackground fatal:", err);
     }

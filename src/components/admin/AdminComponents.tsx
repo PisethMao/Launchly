@@ -493,7 +493,7 @@ function ProjectsManagement() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {filteredMockProjects.map((p, idx) => (
+                            {/* {filteredMockProjects.map((p, idx) => (
                                 <tr
                                     key={p.id}
                                     onMouseEnter={() => setHoveredRow(p.id)}
@@ -570,7 +570,7 @@ function ProjectsManagement() {
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ))} */}
                             {filteredProjects.map((p, idx) => (
                                 <tr
                                     key={p.id}
