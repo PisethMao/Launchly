@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/Toast";
 import { getOrCreateTempSessionClient } from "@/utils/session/client";
+import { ZipDeploymentLoading } from "./ZipLoading";
 
 export default function NewZipDeploymentPage() {
     const [zipFile, setZipFile] = useState<File | null>(null);
@@ -16,6 +17,9 @@ export default function NewZipDeploymentPage() {
     const [dragActive, setDragActive] = useState(false);
     const [agreePolicy, setAgreePolicy] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [showZipDeploymentLoading, setShowZipDeploymentLoading] =
+        useState(false);
+    const [fileName, setFileName] = useState("project-files.zip");
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -60,7 +64,13 @@ export default function NewZipDeploymentPage() {
         const file = e.target.files?.[0];
         if (file && validateZipFile(file)) {
             setZipFile(file);
-            setSuccess(`✅ File "${file.name}" loaded (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            setSuccess(
+                `✅ File "${file.name}" loaded (${(
+                    file.size /
+                    1024 /
+                    1024
+                ).toFixed(2)} MB)`
+            );
             setError(null);
         }
     };
@@ -83,7 +93,13 @@ export default function NewZipDeploymentPage() {
         const file = e.dataTransfer.files?.[0];
         if (file && validateZipFile(file)) {
             setZipFile(file);
-            setSuccess(`✅ File "${file.name}" loaded (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            setSuccess(
+                `✅ File "${file.name}" loaded (${(
+                    file.size /
+                    1024 /
+                    1024
+                ).toFixed(2)} MB)`
+            );
             setError(null);
         }
     };
@@ -109,9 +125,13 @@ export default function NewZipDeploymentPage() {
         }
 
         showToast(
-            `🚀 Deployment started\n\nProject: ${projectName}\nFile: ${zipFile.name}\nSize: ${(zipFile.size / 1024 / 1024).toFixed(2)} MB`,
+            `🚀 Deployment started\n\nProject: ${projectName}\nFile: ${
+                zipFile.name
+            }\nSize: ${(zipFile.size / 1024 / 1024).toFixed(2)} MB`,
             "success"
         );
+
+        setShowZipDeploymentLoading(true);
 
         setLoading(true);
         setUploadProgress(0);
@@ -143,17 +163,14 @@ export default function NewZipDeploymentPage() {
 
         if (res.ok) {
             showToast("ZIP uploaded and verified!", "success");
-            setTimeout(() => router.push("/user"), 1000);
-            setTimeout(() => router.refresh(), 50);
         } else {
             showToast(`⚠️ Deployment failed: ${data.message}`, "error");
         }
-        setLoading(false);
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 dark:from-gray-950 dark:via-indigo-950/20 dark:to-purple-950/10">
-            <div className="max-w-5xl mx-auto px-6 py-16">
+            <div className="max-w-5xl mx-auto px-6 py-20">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -161,9 +178,17 @@ export default function NewZipDeploymentPage() {
                     className="mb-12 text-center"
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 mb-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M13 7H7v6h6V7z"/>
-                            <path fillRule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z" clipRule="evenodd"/>
+                        <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path d="M13 7H7v6h6V7z" />
+                            <path
+                                fillRule="evenodd"
+                                d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
+                                clipRule="evenodd"
+                            />
                         </svg>
                         ZIP Deployment
                     </div>
@@ -171,7 +196,8 @@ export default function NewZipDeploymentPage() {
                         Deploy Your Project
                     </h1>
                     <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        Upload a ZIP file containing your static website and deploy it instantly to the cloud
+                        Upload a ZIP file containing your static website and
+                        deploy it instantly to the cloud
                     </p>
                 </motion.div>
 
@@ -193,8 +219,18 @@ export default function NewZipDeploymentPage() {
                 >
                     <div className="flex items-center gap-3 mb-6">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            <svg
+                                className="w-6 h-6 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                />
                             </svg>
                         </div>
                         <div>
@@ -229,7 +265,10 @@ export default function NewZipDeploymentPage() {
                         />
 
                         {!zipFile ? (
-                            <label htmlFor="zip-upload" className="cursor-pointer block">
+                            <label
+                                htmlFor="zip-upload"
+                                className="cursor-pointer block"
+                            >
                                 <motion.div
                                     initial={{ scale: 0.9, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
@@ -252,7 +291,10 @@ export default function NewZipDeploymentPage() {
                                     </div>
                                     <div>
                                         <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            <span className="text-indigo-600 dark:text-indigo-400">Click to upload</span> or drag and drop
+                                            <span className="text-indigo-600 dark:text-indigo-400">
+                                                Click to upload
+                                            </span>{" "}
+                                            or drag and drop
                                         </p>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">
                                             ZIP files only • Maximum 100MB
@@ -268,8 +310,16 @@ export default function NewZipDeploymentPage() {
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center flex-shrink-0">
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                                        <svg
+                                            className="w-6 h-6 text-white"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clipRule="evenodd"
+                                            />
                                         </svg>
                                     </div>
                                     <div className="text-left">
@@ -277,7 +327,12 @@ export default function NewZipDeploymentPage() {
                                             {zipFile.name}
                                         </p>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            {(zipFile.size / 1024 / 1024).toFixed(2)} MB
+                                            {(
+                                                zipFile.size /
+                                                1024 /
+                                                1024
+                                            ).toFixed(2)}{" "}
+                                            MB
                                         </p>
                                     </div>
                                 </div>
@@ -286,8 +341,18 @@ export default function NewZipDeploymentPage() {
                                     onClick={removeFile}
                                     className="ml-4 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors"
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
                                     </svg>
                                 </button>
                             </motion.div>
@@ -300,8 +365,16 @@ export default function NewZipDeploymentPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="mt-4 text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-lg"
                         >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                            <svg
+                                className="w-4 h-4"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clipRule="evenodd"
+                                />
                             </svg>
                             {success}
                         </motion.p>
@@ -316,8 +389,18 @@ export default function NewZipDeploymentPage() {
                 >
                     <div className="flex items-center gap-3 mb-6">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                            <svg
+                                className="w-6 h-6 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                                />
                             </svg>
                         </div>
                         <div>
@@ -338,7 +421,13 @@ export default function NewZipDeploymentPage() {
                             type="text"
                             placeholder="my-awesome-project"
                             value={projectName}
-                            onChange={(e) => setProjectName(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                            onChange={(e) =>
+                                setProjectName(
+                                    e.target.value
+                                        .toLowerCase()
+                                        .replace(/[^a-z0-9-]/g, "")
+                                )
+                            }
                             className="w-full border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all"
                         />
                         <div className="mt-3 flex items-center gap-2 text-sm">
@@ -347,7 +436,9 @@ export default function NewZipDeploymentPage() {
                                     <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">
                                         {projectName || "your-project"}
                                     </span>
-                                    <span className="text-gray-500">.yourdomain.com</span>
+                                    <span className="text-gray-500">
+                                        .yourdomain.com
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -393,7 +484,9 @@ export default function NewZipDeploymentPage() {
                         >
                             <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 <span>Uploading...</span>
-                                <span className="font-semibold">{uploadProgress}%</span>
+                                <span className="font-semibold">
+                                    {uploadProgress}%
+                                </span>
                             </div>
                             <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                 <motion.div
@@ -409,27 +502,67 @@ export default function NewZipDeploymentPage() {
                     <button
                         type="button"
                         onClick={handleDeploy}
-                        disabled={loading || !zipFile || !projectName || !agreePolicy}
+                        disabled={
+                            loading || !zipFile || !projectName || !agreePolicy
+                        }
                         className="mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-300 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 disabled:shadow-none flex items-center justify-center gap-2 group"
                     >
                         {loading ? (
                             <>
-                                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                <svg
+                                    className="animate-spin h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    />
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
                                 </svg>
                                 Deploying...
                             </>
                         ) : (
                             <>
-                                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                <svg
+                                    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                                    />
                                 </svg>
                                 Deploy Now
                             </>
                         )}
                     </button>
                 </motion.div>
+
+                <ZipDeploymentLoading
+                    isOpen={showZipDeploymentLoading}
+                    projectName={projectName}
+                    fileName={fileName}
+                    fileSize={zipFile ? zipFile.size : 0}
+                    onClose={() => {
+                        setShowZipDeploymentLoading(false);
+                        setTimeout(() => {
+                            router.push("/user");
+                        }, 3000);
+                    }}
+                />
             </div>
         </div>
     );

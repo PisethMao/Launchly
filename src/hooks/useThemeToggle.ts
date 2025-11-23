@@ -1,18 +1,42 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { useEffect, useState } from "react";
-type Theme = "light" | "dark";
 
 export function useThemeToggle() {
-    const [theme, setTheme] = useState<Theme>("light");
+    const [theme, setTheme] = useState<"light" | "dark">("light");
+    const [mounted, setMounted] = useState(false);
+
+    // Load stored theme only
     useEffect(() => {
-        document.documentElement.classList.remove("dark");
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setTheme("light");
+        const stored = localStorage.getItem("theme");
+
+        if (stored === "dark") {
+            setTheme("dark");
+            document.documentElement.classList.add("dark");
+        } else {
+            setTheme("light");
+            document.documentElement.classList.remove("dark");
+        }
+
+        setMounted(true);
     }, []);
+
+    // Sync theme changes AFTER mount
+    useEffect(() => {
+        if (!mounted) return;
+
+        if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+        }
+    }, [theme, mounted]);
+
     const toggleTheme = () => {
-        const newTheme: Theme = theme === "dark" ? "light" : "dark";
-        setTheme(newTheme);
-        document.documentElement.classList.toggle("dark", newTheme === "dark");
+        setTheme((prev) => (prev === "dark" ? "light" : "dark"));
     };
-    return { theme, toggleTheme };
+
+    return { theme, toggleTheme, mounted };
 }

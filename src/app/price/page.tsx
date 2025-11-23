@@ -1,7 +1,9 @@
+import Pricing from "@/components/pricing/Pricing";
+
 export default function page() {
-  return (
-    <div>
-      <h1 className="font-poppins">Price Page</h1>
-    </div>
-  );
+    return (
+        <div>
+            <Pricing />
+        </div>
+    );
 }
