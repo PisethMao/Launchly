@@ -47,8 +47,6 @@ export default function CreateUserPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
-    // ...existing code...
-
     const validateField = useCallback(
         (name: keyof CreateUserForm, value: string) => {
             try {
@@ -79,7 +77,6 @@ export default function CreateUserPage() {
             const { name, value } = e.target;
             setForm((prev) => ({ ...prev, [name]: value }));
 
-            // Only validate if field has been touched
             if (touchedFields.has(name)) {
                 validateField(name as keyof CreateUserForm, value);
             }
@@ -102,10 +99,8 @@ export default function CreateUserPage() {
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
-            // Mark all fields as touched
             setTouchedFields(new Set(Object.keys(form)));
 
-            // Validate entire form
             try {
                 createUserSchema.parse(form);
                 setFieldErrors({});
@@ -118,7 +113,6 @@ export default function CreateUserPage() {
                         }
                     });
                     setFieldErrors(errors);
-                    // Focus first error field
                     const firstErrorField = Object.keys(errors)[0];
                     document.getElementById(firstErrorField)?.focus();
                     return;
@@ -147,9 +141,8 @@ export default function CreateUserPage() {
                     );
                 }
 
-                // Success - redirect with transition
                 startTransition(() => {
-                    router.push("/admin/dashboard");
+                    router.push("/admin");
                     router.refresh();
                 });
             } catch (err) {
@@ -172,27 +165,27 @@ export default function CreateUserPage() {
                 return;
             }
         }
-        router.push("/admin/dashboard");
+        router.push("/admin");
     }, [form, router]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-30 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-30 px-4 sm:px-6 lg:px-8 transition-colors duration-500">
             <div className="max-w-2xl mx-auto">
-                <div className="bg-white shadow-2xl rounded-xl overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-6 sm:px-8">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-600 dark:to-purple-600 px-6 py-6 sm:px-8">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h1 className="text-3xl font-bold text-white">
                                     Create New User
                                 </h1>
-                                <p className="text-green-100 mt-1">
+                                <p className="text-blue-100 dark:text-purple-200 mt-1">
                                     Add a new user to the system
                                 </p>
                             </div>
                             <button
                                 onClick={handleCancel}
-                                className="text-white hover:bg-green-500 rounded-lg p-2 transition-colors"
+                                className="text-white hover:bg-red-400 dark:hover:bg-red-400 rounded-lg p-2 transition-colors"
                                 aria-label="Close"
                                 disabled={isSubmitting}
                             >
@@ -216,10 +209,10 @@ export default function CreateUserPage() {
                     {/* Form */}
                     <div className="px-6 py-8 sm:px-8">
                         {submitError && (
-                            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg animate-shake">
+                            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border-l-4 border-red-500 dark:border-red-400 rounded-r-lg animate-shake">
                                 <div className="flex items-start">
                                     <svg
-                                        className="w-5 h-5 text-red-500 mr-3 flex-shrink-0 mt-0.5"
+                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -230,10 +223,10 @@ export default function CreateUserPage() {
                                         />
                                     </svg>
                                     <div>
-                                        <p className="font-medium text-red-800">
+                                        <p className="font-medium text-red-800 dark:text-red-200">
                                             Creation Failed
                                         </p>
-                                        <p className="text-red-700 text-sm mt-1">
+                                        <p className="text-red-700 dark:text-red-300 text-sm mt-1">
                                             {submitError}
                                         </p>
                                     </div>
@@ -246,7 +239,7 @@ export default function CreateUserPage() {
                             <div>
                                 <label
                                     htmlFor="name"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
                                 >
                                     Full Name{" "}
                                     <span className="text-red-500">*</span>
@@ -255,10 +248,10 @@ export default function CreateUserPage() {
                                     id="name"
                                     type="text"
                                     name="name"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all ${
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-purple-600 outline-none transition-all bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
                                         fieldErrors.name
-                                            ? "border-red-300 bg-red-50"
-                                            : "border-gray-300 hover:border-gray-400"
+                                            ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950"
+                                            : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                                     }`}
                                     value={form.name}
                                     onChange={handleChange}
@@ -268,7 +261,7 @@ export default function CreateUserPage() {
                                     autoComplete="name"
                                 />
                                 {fieldErrors.name && (
-                                    <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
                                             className="w-4 h-4 mr-1 flex-shrink-0"
                                             fill="currentColor"
@@ -289,7 +282,7 @@ export default function CreateUserPage() {
                             <div>
                                 <label
                                     htmlFor="email"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
                                 >
                                     Email Address{" "}
                                     <span className="text-red-500">*</span>
@@ -297,7 +290,7 @@ export default function CreateUserPage() {
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <svg
-                                            className="h-5 w-5 text-gray-400"
+                                            className="h-5 w-5 text-gray-400 dark:text-gray-500"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -314,10 +307,10 @@ export default function CreateUserPage() {
                                         id="email"
                                         type="email"
                                         name="email"
-                                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all ${
+                                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-purple-600 outline-none transition-all bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
                                             fieldErrors.email
-                                                ? "border-red-300 bg-red-50"
-                                                : "border-gray-300 hover:border-gray-400"
+                                                ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950"
+                                                : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                                         }`}
                                         value={form.email}
                                         onChange={handleChange}
@@ -328,7 +321,7 @@ export default function CreateUserPage() {
                                     />
                                 </div>
                                 {fieldErrors.email && (
-                                    <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
                                             className="w-4 h-4 mr-1 flex-shrink-0"
                                             fill="currentColor"
@@ -349,7 +342,7 @@ export default function CreateUserPage() {
                             <div>
                                 <label
                                     htmlFor="password"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
                                 >
                                     Password{" "}
                                     <span className="text-red-500">*</span>
@@ -357,7 +350,7 @@ export default function CreateUserPage() {
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <svg
-                                            className="h-5 w-5 text-gray-400"
+                                            className="h-5 w-5 text-gray-400 dark:text-gray-500"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -376,10 +369,10 @@ export default function CreateUserPage() {
                                             showPassword ? "text" : "password"
                                         }
                                         name="password"
-                                        className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all ${
+                                        className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-purple-600 outline-none transition-all bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
                                             fieldErrors.password
-                                                ? "border-red-300 bg-red-50"
-                                                : "border-gray-300 hover:border-gray-400"
+                                                ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950"
+                                                : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                                         }`}
                                         value={form.password}
                                         onChange={handleChange}
@@ -393,7 +386,7 @@ export default function CreateUserPage() {
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                                         tabIndex={-1}
                                     >
                                         {showPassword ? (
@@ -433,8 +426,6 @@ export default function CreateUserPage() {
                                         )}
                                     </button>
                                 </div>
-
-                                {/* ...existing code... */}
                             </div>
 
                             {/* Role and Plan Grid */}
@@ -443,7 +434,7 @@ export default function CreateUserPage() {
                                 <div>
                                     <label
                                         htmlFor="role"
-                                        className="block text-sm font-semibold text-gray-700 mb-2"
+                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
                                     >
                                         User Role
                                     </label>
@@ -451,7 +442,7 @@ export default function CreateUserPage() {
                                         <select
                                             id="role"
                                             name="role"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all hover:border-gray-400 appearance-none bg-white"
+                                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-purple-600 outline-none transition-all hover:border-gray-400 dark:hover:border-gray-500 appearance-none bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                             value={form.role}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
@@ -462,7 +453,7 @@ export default function CreateUserPage() {
                                         </select>
                                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                             <svg
-                                                className="w-5 h-5 text-gray-400"
+                                                className="w-5 h-5 text-gray-400 dark:text-gray-500"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -476,7 +467,7 @@ export default function CreateUserPage() {
                                             </svg>
                                         </div>
                                     </div>
-                                    <p className="mt-1.5 text-xs text-gray-500">
+                                    <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                         Permission level for this user
                                     </p>
                                 </div>
@@ -485,7 +476,7 @@ export default function CreateUserPage() {
                                 <div>
                                     <label
                                         htmlFor="plan"
-                                        className="block text-sm font-semibold text-gray-700 mb-2"
+                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
                                     >
                                         Subscription Plan
                                     </label>
@@ -493,7 +484,7 @@ export default function CreateUserPage() {
                                         <select
                                             id="plan"
                                             name="plan"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all hover:border-gray-400 appearance-none bg-white"
+                                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-purple-600 outline-none transition-all hover:border-gray-400 dark:hover:border-gray-500 appearance-none bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                             value={form.plan}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
@@ -504,7 +495,7 @@ export default function CreateUserPage() {
                                         </select>
                                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                             <svg
-                                                className="w-5 h-5 text-gray-400"
+                                                className="w-5 h-5 text-gray-400 dark:text-gray-500"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -518,7 +509,7 @@ export default function CreateUserPage() {
                                             </svg>
                                         </div>
                                     </div>
-                                    <p className="mt-1.5 text-xs text-gray-500">
+                                    <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                         Initial subscription tier
                                     </p>
                                 </div>
@@ -529,14 +520,14 @@ export default function CreateUserPage() {
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-1 px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={isSubmitting}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-emerald-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl"
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:scale-105 duration-300 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl"
                                     disabled={
                                         isSubmitting ||
                                         Object.keys(fieldErrors).length > 0
@@ -590,10 +581,10 @@ export default function CreateUserPage() {
                 </div>
 
                 {/* Help Text */}
-                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
                     <div className="flex items-start">
                         <svg
-                            className="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5"
+                            className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3 flex-shrink-0 mt-0.5"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                         >
@@ -603,11 +594,11 @@ export default function CreateUserPage() {
                                 clipRule="evenodd"
                             />
                         </svg>
-                        <div className="text-sm text-blue-800">
+                        <div className="text-sm text-blue-800 dark:text-blue-200">
                             <p className="font-semibold mb-1">
                                 Creating a new user
                             </p>
-                            <p>
+                            <p className="dark:text-blue-300">
                                 The user will receive an email with their
                                 credentials. Make sure to use a valid email
                                 address.

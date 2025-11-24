@@ -184,7 +184,7 @@ export default function EditUserPage() {
                 }
 
                 startTransition(() => {
-                    router.push("/admin/users");
+                    router.push("/admin");
                     router.refresh();
                 });
             } catch (err) {
@@ -207,15 +207,15 @@ export default function EditUserPage() {
                 return;
             }
         }
-        router.push("/admin/dashboard");
+        router.push("/admin");
     }, [isDirty, router]);
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="text-center">
-                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent mb-4"></div>
-                    <p className="text-gray-600 font-medium">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 dark:border-blue-500 border-r-transparent mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300 font-medium">
                         Loading user data...
                     </p>
                 </div>
@@ -225,11 +225,11 @@ export default function EditUserPage() {
 
     if (loadError) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-                <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+                <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-lg dark:shadow-2xl rounded-lg p-8 text-center border border-gray-200 dark:border-gray-700">
+                    <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg
-                            className="w-8 h-8 text-red-600"
+                            className="w-8 h-8 text-red-600 dark:text-red-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -242,13 +242,13 @@ export default function EditUserPage() {
                             />
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                         Error Loading User
                     </h2>
-                    <p className="text-gray-600 mb-6">{loadError}</p>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">{loadError}</p>
                     <button
                         onClick={() => router.push("/admin/users")}
-                        className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium shadow-md"
                     >
                         Back to Users
                     </button>
@@ -258,23 +258,23 @@ export default function EditUserPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-40 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
-                <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 sm:px-8">
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-6 py-6 sm:px-8">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h1 className="text-3xl font-bold text-white">
                                     Edit User
                                 </h1>
-                                <p className="text-blue-100 mt-1">
+                                <p className="text-blue-100 dark:text-blue-200 mt-1">
                                     Update user information and permissions
                                 </p>
                             </div>
                             <button
                                 onClick={handleCancel}
-                                className="text-white hover:bg-blue-500 rounded-lg p-2 transition-colors"
+                                className="text-white hover:bg-blue-500 dark:hover:bg-blue-600 rounded-lg p-2 transition-colors"
                                 aria-label="Close"
                                 disabled={isSubmitting}
                             >
@@ -298,10 +298,10 @@ export default function EditUserPage() {
                     {/* Form */}
                     <div className="px-6 py-8 sm:px-8">
                         {submitError && (
-                            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-r-lg">
                                 <div className="flex items-start">
                                     <svg
-                                        className="w-5 h-5 text-red-500 mr-3 flex-shrink-0 mt-0.5"
+                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -312,10 +312,10 @@ export default function EditUserPage() {
                                         />
                                     </svg>
                                     <div>
-                                        <p className="font-medium text-red-800">
+                                        <p className="font-medium text-red-800 dark:text-red-300">
                                             Update Failed
                                         </p>
-                                        <p className="text-red-700 text-sm mt-1">
+                                        <p className="text-red-700 dark:text-red-400 text-sm mt-1">
                                             {submitError}
                                         </p>
                                     </div>
@@ -328,18 +328,18 @@ export default function EditUserPage() {
                             <div>
                                 <label
                                     htmlFor="name"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
                                 >
-                                    Name <span className="text-red-500">*</span>
+                                    Name <span className="text-red-500 dark:text-red-400">*</span>
                                 </label>
                                 <input
                                     id="name"
                                     type="text"
                                     name="name"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 ${
                                         fieldErrors.name
-                                            ? "border-red-300 bg-red-50"
-                                            : "border-gray-300 hover:border-gray-400"
+                                            ? "border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20"
+                                            : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                                     }`}
                                     value={form.name}
                                     onChange={handleChange}
@@ -347,7 +347,7 @@ export default function EditUserPage() {
                                     placeholder="Enter full name"
                                 />
                                 {fieldErrors.name && (
-                                    <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
                                             className="w-4 h-4 mr-1"
                                             fill="currentColor"
@@ -368,19 +368,19 @@ export default function EditUserPage() {
                             <div>
                                 <label
                                     htmlFor="email"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
                                 >
                                     Email Address{" "}
-                                    <span className="text-red-500">*</span>
+                                    <span className="text-red-500 dark:text-red-400">*</span>
                                 </label>
                                 <input
                                     id="email"
                                     type="email"
                                     name="email"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 ${
                                         fieldErrors.email
-                                            ? "border-red-300 bg-red-50"
-                                            : "border-gray-300 hover:border-gray-400"
+                                            ? "border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20"
+                                            : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                                     }`}
                                     value={form.email}
                                     onChange={handleChange}
@@ -388,7 +388,7 @@ export default function EditUserPage() {
                                     placeholder="user@example.com"
                                 />
                                 {fieldErrors.email && (
-                                    <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
                                             className="w-4 h-4 mr-1"
                                             fill="currentColor"
@@ -411,7 +411,7 @@ export default function EditUserPage() {
                                 <div>
                                     <label
                                         htmlFor="role"
-                                        className="block text-sm font-semibold text-gray-700 mb-2"
+                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
                                     >
                                         Role
                                     </label>
@@ -419,7 +419,7 @@ export default function EditUserPage() {
                                         <select
                                             id="role"
                                             name="role"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:border-gray-400 appearance-none bg-white"
+                                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 outline-none transition-all hover:border-gray-400 dark:hover:border-gray-500 appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                             value={form.role}
                                             onChange={handleChange}
                                             disabled={isSubmitting}
@@ -429,7 +429,7 @@ export default function EditUserPage() {
                                         </select>
                                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                             <svg
-                                                className="w-5 h-5 text-gray-400"
+                                                className="w-5 h-5 text-gray-400 dark:text-gray-500"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -443,7 +443,7 @@ export default function EditUserPage() {
                                             </svg>
                                         </div>
                                     </div>
-                                    <p className="mt-1.5 text-xs text-gray-500">
+                                    <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                         User permissions level
                                     </p>
                                 </div>
@@ -452,7 +452,7 @@ export default function EditUserPage() {
                                 <div>
                                     <label
                                         htmlFor="plan"
-                                        className="block text-sm font-semibold text-gray-700 mb-2"
+                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
                                     >
                                         Subscription Plan
                                     </label>
@@ -460,7 +460,7 @@ export default function EditUserPage() {
                                         <select
                                             id="plan"
                                             name="plan"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:border-gray-400 appearance-none bg-white"
+                                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 outline-none transition-all hover:border-gray-400 dark:hover:border-gray-500 appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                             value={form.plan}
                                             onChange={handleChange}
                                             disabled={isSubmitting}
@@ -470,7 +470,7 @@ export default function EditUserPage() {
                                         </select>
                                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                             <svg
-                                                className="w-5 h-5 text-gray-400"
+                                                className="w-5 h-5 text-gray-400 dark:text-gray-500"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -484,7 +484,7 @@ export default function EditUserPage() {
                                             </svg>
                                         </div>
                                     </div>
-                                    <p className="mt-1.5 text-xs text-gray-500">
+                                    <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                         Current subscription tier
                                     </p>
                                 </div>
@@ -492,7 +492,7 @@ export default function EditUserPage() {
 
                             {/* Status Indicator */}
                             {isDirty && !isSubmitting && (
-                                <div className="flex items-center text-amber-600 text-sm bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                                <div className="flex items-center text-amber-700 dark:text-amber-400 text-sm bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg px-4 py-3">
                                     <svg
                                         className="w-5 h-5 mr-2"
                                         fill="none"
@@ -517,14 +517,14 @@ export default function EditUserPage() {
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-1 px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={isSubmitting}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl"
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-600 dark:to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-700 dark:hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 dark:disabled:from-gray-600 dark:disabled:to-gray-600 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl"
                                     disabled={
                                         isSubmitting ||
                                         !isDirty ||

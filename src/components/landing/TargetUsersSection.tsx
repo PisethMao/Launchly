@@ -213,14 +213,6 @@ export default function TargetUsersSection() {
             <p className="text-gray-700 dark:text-gray-300 text-lg font-medium">
               No matter your background, Launchly makes deployment simple
             </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
-            >
-              Get Started Free
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
           </div>
         </motion.div>
       </div>

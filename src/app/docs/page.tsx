@@ -487,18 +487,18 @@ const DeploymentDocsPage = () => {
                     {/* Public vs Private */}
                     <motion.div
                         variants={fadeInUp}
-                        className="rounded-3xl shadow-xl overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 border border-purple-300 dark:border-purple-700"
+                        className="rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-300 border border-gray-800"
                     >
                         <div className="p-10 text-white">
                             <div className="flex items-start gap-5 mb-8">
-                                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                                <div className="bg-black/80 dark:bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
                                     <Eye className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h2 className="text-4xl font-bold mb-3">
+                                    <h2 className="text-4xl font-bold mb-3 text-gray-700 dark:text-gray-300">
                                         Deploy Without Login
                                     </h2>
-                                    <p className="text-purple-100 text-xl">
+                                    <p className="text-gray-700 dark:text-gray-300 text-xl">
                                         Start deploying immediately, no account required
                                     </p>
                                 </div>
@@ -507,11 +507,11 @@ const DeploymentDocsPage = () => {
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div>
-                                        <h3 className="font-bold text-xl mb-4 flex items-center gap-3">
+                                        <h3 className="font-bold text-xl mb-4 flex items-center gap-3 text-gray-700 dark:text-gray-300">
                                             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
                                             Without Account
                                         </h3>
-                                        <ul className="space-y-3 text-purple-100">
+                                        <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                                             <li className="flex items-start gap-2">
                                                 <span className="text-xl">•</span>
                                                 <span>Deploy instantly without signing up</span>
@@ -531,11 +531,11 @@ const DeploymentDocsPage = () => {
                                         </ul>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-xl mb-4 flex items-center gap-3">
+                                        <h3 className="font-bold text-xl mb-4 flex items-center gap-3 text-gray-700 dark:text-gray-300">
                                             <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse shadow-lg shadow-blue-400/50"></div>
                                             With Account
                                         </h3>
-                                        <ul className="space-y-3 text-purple-100">
+                                        <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                                             <li className="flex items-start gap-2">
                                                 <span className="text-xl">•</span>
                                                 <span>Manage all your projects</span>
@@ -559,7 +559,7 @@ const DeploymentDocsPage = () => {
 
                             <div className="mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 flex items-start gap-4">
                                 <span className="text-3xl">💡</span>
-                                <p className="text-purple-100 text-lg">
+                                <p className="text-gray-700 dark:text-gray-300 text-lg">
                                     <span className="font-bold">Pro Tip:</span>{" "}
                                     Deploy without an account to test, then sign up to claim ownership and unlock more features!
                                 </p>

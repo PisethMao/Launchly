@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { motion } from "framer-motion";
 import { X, Check, ArrowRight, Frown, Smile, Clock, Zap } from "lucide-react";
@@ -235,14 +236,6 @@ export default function BeforeAfterSection() {
           <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
             Join thousands of developers who've made the switch
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300"
-          >
-            Start Deploying Smarter
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
         </motion.div>
       </div>
     </section>

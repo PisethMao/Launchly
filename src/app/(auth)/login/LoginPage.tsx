@@ -35,7 +35,7 @@ export default function LoginPage() {
         });
 
         if (resAdmin.ok) {
-            window.location.href = "/admin/dashboard";
+            window.location.href = "/admin";
         } else {
             const res = await signIn("credentials", {
                 email,

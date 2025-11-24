@@ -231,7 +231,7 @@ const FeaturesPage = () => {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             {/* HERO */}
             <div
-                className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 dark:from-black dark:via-slate-900 dark:to-black"
+                className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"
             >
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
