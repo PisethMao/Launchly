@@ -75,6 +75,7 @@ const plans: Plan[] = [
       { label: "Advanced security (SSO, audit logs, policies)" },
       { label: "Custom integrations (CI/CD, API access)" },
       { label: "White-labeling (brand Launchly as your own)" },
+      { label: "Whitelabeling (brand Launchly as your own)" },
       { label: "Dedicated account manager & 24/7 premium support" },
     ],
   },
@@ -86,6 +87,7 @@ function PlanCard({ plan }: { plan: Plan }) {
       className={`relative flex flex-col rounded-2xl border hover:transition-transform hover:scale-105 hover:duration-300 ${
         plan.highlighted
           ? "border-gray-200 shadow-xl shadow-black/5"
+          ? "border-black/10 shadow-xl shadow-black/5"
           : "border-gray-200"
       }`}
     >
