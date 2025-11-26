@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import RegisterPage from "./RegisterPage";
-
+import App from "./AdminApp";
 export default async function Page() {
     const session = await getServerSession(authOptions);
 
@@ -16,5 +15,5 @@ export default async function Page() {
         redirect("/user");
     }
 
-    return <RegisterPage />;
+    return <App />;
 }
