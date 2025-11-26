@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function DeploymentPreview() {
     const [activeTab, setActiveTab] = useState("overview");
-    const [deployStatus, setDeployStatus] = useState("success");
+    const [] = useState("success");
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function DeploymentPreview() {
     return (
         <section className="font-poppins relative isolate py-32 overflow-hidden">
             {/* Enhanced Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-gray-950 dark:via-blue-950/20 dark:to-purple-950/20" />
+            <div className="absolute inset-0 bg-linear-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-gray-950 dark:via-blue-950/20 dark:to-purple-950/20" />
 
             {/* Animated gradient orbs */}
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
@@ -36,7 +36,7 @@ export default function DeploymentPreview() {
                         transition={{ duration: 0.5 }}
                         className="inline-block mb-6"
                     >
-                        <span className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wide uppercase border border-blue-200/50 dark:border-blue-700/50">
+                        <span className="px-5 py-2 rounded-full bg-linear-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wide uppercase border border-blue-200/50 dark:border-blue-700/50">
                             Live Demo
                         </span>
                     </motion.div>
@@ -46,7 +46,7 @@ export default function DeploymentPreview() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.4 }}
                         transition={{ duration: 0.6 }}
-                        className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-900 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-6"
+                        className="text-4xl md:text-6xl font-bold bg-linear-to-r from-gray-900 via-blue-800 to-purple-900 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-6"
                     >
                         See Launchly in Action
                     </motion.h2>
@@ -72,7 +72,7 @@ export default function DeploymentPreview() {
                     className="relative"
                 >
                     {/* Glow effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl opacity-20 blur-2xl" />
+                    <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-purple-500 rounded-3xl opacity-20 blur-2xl" />
 
                     {/* Main container */}
                     <div className="relative mx-auto max-w-6xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
@@ -107,7 +107,7 @@ export default function DeploymentPreview() {
                         </div>
 
                         {/* Dashboard Content */}
-                        <div className="relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 p-8">
+                        <div className="relative bg-linear-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 p-8">
                             {/* Sidebar & Main Content Layout */}
                             <div className="flex gap-6">
                                 {/* Sidebar */}
@@ -185,7 +185,7 @@ export default function DeploymentPreview() {
                                             </div>
                                             <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                                 <motion.div
-                                                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                                                    className="h-full bg-linear-to-r from-blue-500 to-purple-500"
                                                     style={{
                                                         width: `${progress}%`,
                                                     }}
@@ -230,7 +230,7 @@ export default function DeploymentPreview() {
                                                 className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
                                             >
                                                 <div
-                                                    className={`text-2xl font-bold bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-600 bg-clip-text text-transparent`}
+                                                    className={`text-2xl font-bold bg-linear-to-r from-${stat.color}-500 to-${stat.color}-600 bg-clip-text text-transparent`}
                                                 >
                                                     {stat.value}
                                                 </div>

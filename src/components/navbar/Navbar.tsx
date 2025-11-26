@@ -42,14 +42,14 @@ export default function Navbar() {
             `}
         >
             {/* Gradient line at top */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50" />
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link
                         href="/"
-                        className="group flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+                        className="group flex items-center gap-2 text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
                     >
                         <Rocket className="w-6 h-6 text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform duration-300" />
                         Launchly
@@ -81,13 +81,13 @@ export default function Navbar() {
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="group relative px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold overflow-hidden hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                    className="group relative px-5 py-2 rounded-xl bg-linear-to-r from-blue-600 to-purple-600 text-white font-semibold overflow-hidden hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 >
                                     <span className="relative z-10 flex items-center gap-2">
                                         Sign up
                                         <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
                                     </span>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    <div className="absolute inset-0 bg-linear-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 </Link>
                             </>
                         )}
@@ -98,7 +98,7 @@ export default function Navbar() {
                                     onClick={() => setShowUserMenu(!showUserMenu)}
                                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                                    <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                                         {session.user?.name?.charAt(0).toUpperCase()}
                                     </div>
                                     <span className="text-gray-700 dark:text-gray-300 font-medium">
@@ -197,7 +197,7 @@ export default function Navbar() {
                                 <Link
                                     href="/register"
                                     onClick={() => setIsOpen(false)}
-                                    className="px-4 py-3 text-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
+                                    className="px-4 py-3 text-center rounded-xl bg-linear-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
                                 >
                                     Sign up
                                 </Link>
@@ -207,7 +207,7 @@ export default function Navbar() {
                         {session && (
                             <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
                                 <div className="flex items-center gap-3 px-4 py-2">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                                         {session.user?.name?.charAt(0).toUpperCase()}
                                     </div>
                                     <div>

@@ -101,13 +101,13 @@ function PlanCard({ plan, isYearly }: { plan: Plan; isYearly: boolean }) {
             } bg-white dark:bg-gray-800 hover:-translate-y-1`}
         >
             {plan.highlighted && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 px-4 py-1.5 text-xs font-bold text-white shadow-lg">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 px-4 py-1.5 text-xs font-bold text-white shadow-lg">
                     ⭐ Most popular
                 </div>
             )}
 
             <div className="p-8">
-                <h3 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                <h3 className="text-2xl font-bold tracking-tight bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                     {plan.name}
                 </h3>
                 <div className="mt-4 flex items-baseline gap-2">
@@ -137,13 +137,13 @@ function PlanCard({ plan, isYearly }: { plan: Plan; isYearly: boolean }) {
             </div>
 
             <div className="px-8">
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
+                <div className="h-px w-full bg-linear-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
             </div>
 
             <ul className="flex-1 space-y-3 p-8 text-sm">
                 {plan.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-3 group/item">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-white shadow-sm">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-white shadow-sm">
                             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
@@ -159,13 +159,13 @@ function PlanCard({ plan, isYearly }: { plan: Plan; isYearly: boolean }) {
                 <button
                     className={`group/btn relative w-full overflow-hidden rounded-xl px-6 py-3.5 text-sm font-bold transition-all duration-300 ${
                         plan.highlighted
-                            ? "bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-lg shadow-indigo-500/30 dark:shadow-indigo-400/30 hover:shadow-xl hover:shadow-indigo-500/40 dark:hover:shadow-indigo-400/40 hover:scale-105"
+                            ? "bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-lg shadow-indigo-500/30 dark:shadow-indigo-400/30 hover:shadow-xl hover:shadow-indigo-500/40 dark:hover:shadow-indigo-400/40 hover:scale-105"
                             : "border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                     }`}
                 >
                     <span className="relative z-10">{plan.ctaLabel}</span>
                     {plan.highlighted && (
-                        <span className="absolute inset-0 -z-0 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-500 dark:to-indigo-500 opacity-0 transition-opacity group-hover/btn:opacity-100" />
+                        <span className="absolute inset-0 z-0 bg-linear-to-r from-purple-600 to-indigo-600 dark:from-purple-500 dark:to-indigo-500 opacity-0 transition-opacity group-hover/btn:opacity-100" />
                     )}
                 </button>
                 {plan.id !== "free" && plan.id !== "enterprise" && (
@@ -182,7 +182,7 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(false);
 
     return (
-        <section className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 py-20 transition-colors duration-300">
+        <section className="min-h-screen bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 py-20 transition-colors duration-300">
             <div className="mx-auto max-w-7xl">
                 <div className="mx-auto max-w-3xl text-center">
                     <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-4 py-1.5 text-sm font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
@@ -207,7 +207,7 @@ export default function Pricing() {
                             onClick={() => setIsYearly(false)}
                             className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 ${
                                 !isYearly
-                                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-md"
+                                    ? "bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-md"
                                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                             }`}
                         >
@@ -217,7 +217,7 @@ export default function Pricing() {
                             onClick={() => setIsYearly(true)}
                             className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 ${
                                 isYearly
-                                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-md"
+                                    ? "bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white shadow-md"
                                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                             }`}
                         >
@@ -269,7 +269,7 @@ export default function Pricing() {
                             key={i}
                             className="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 transition-all duration-300 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-lg hover:-translate-y-1"
                         >
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 {item.icon}
                             </div>
                             <p className="mt-4 text-lg font-bold text-gray-900 dark:text-white">
