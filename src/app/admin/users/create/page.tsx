@@ -169,11 +169,11 @@ export default function CreateUserPage() {
     }, [form, router]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-30 px-4 sm:px-6 lg:px-8 transition-colors duration-500">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-30 px-4 sm:px-6 lg:px-8 transition-colors duration-500">
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-600 dark:to-purple-600 px-6 py-6 sm:px-8">
+                    <div className="bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-600 dark:to-purple-600 px-6 py-6 sm:px-8">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h1 className="text-3xl font-bold text-white">
@@ -212,7 +212,7 @@ export default function CreateUserPage() {
                             <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border-l-4 border-red-500 dark:border-red-400 rounded-r-lg animate-shake">
                                 <div className="flex items-start">
                                     <svg
-                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5"
+                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 shrink-0 mt-0.5"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -263,7 +263,7 @@ export default function CreateUserPage() {
                                 {fieldErrors.name && (
                                     <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
-                                            className="w-4 h-4 mr-1 flex-shrink-0"
+                                            className="w-4 h-4 mr-1 shrink-0"
                                             fill="currentColor"
                                             viewBox="0 0 20 20"
                                         >
@@ -323,7 +323,7 @@ export default function CreateUserPage() {
                                 {fieldErrors.email && (
                                     <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
                                         <svg
-                                            className="w-4 h-4 mr-1 flex-shrink-0"
+                                            className="w-4 h-4 mr-1 shrink-0"
                                             fill="currentColor"
                                             viewBox="0 0 20 20"
                                         >

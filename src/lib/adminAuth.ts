@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-export async function verifyAdmin(request: Request) {
+export async function verifyAdmin() {
     const cookieStore = await cookies();   // <-- REQUIRED in your version
     const cookie = cookieStore.get("admin-token");
 

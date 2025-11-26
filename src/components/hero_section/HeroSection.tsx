@@ -11,7 +11,7 @@ export default function HeroSection() {
     transition: {
       duration: 3,
       repeat: Infinity,
-      ease: "easeInOut"
+      ease: "easeInOut" as const
     }
   };
 
@@ -22,7 +22,7 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="font-poppins relative flex flex-col-reverse items-center md:flex-row justify-between min-h-[90vh] px-6 md:px-20 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
+    <section className="font-poppins relative flex flex-col-reverse items-center md:flex-row justify-between min-h-[90vh] px-6 md:px-20 overflow-hidden bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
       {/* Content Section */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -47,7 +47,7 @@ export default function HeroSection() {
         {/* Main Heading */}
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
           Deploy Websites{" "}
-          <span className="block mt-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
+          <span className="block mt-2 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
             Effortlessly
           </span>
         </h1>
@@ -81,7 +81,7 @@ export default function HeroSection() {
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(79, 70, 229, 0.3)" }}
             whileTap={{ scale: 0.95 }}
-            className="group px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl transition-all hover:from-indigo-700 hover:to-purple-700 cursor-pointer shadow-xl flex items-center justify-center gap-2"
+            className="group px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl transition-all hover:from-indigo-700 hover:to-purple-700 cursor-pointer shadow-xl flex items-center justify-center gap-2"
             onClick={() => router.push('/user')}
           >
             Get Started Free
@@ -109,7 +109,7 @@ export default function HeroSection() {
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 border-2 border-white dark:border-gray-900"
+                className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-400 to-purple-400 border-2 border-white dark:border-gray-900"
               />
             ))}
           </div>
@@ -130,9 +130,9 @@ export default function HeroSection() {
           className="relative group"
         >
           {/* Main Card - Mock Dashboard */}
-          <div className="relative w-[350px] md:w-[500px] h-[400px] md:h-[500px] bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transform group-hover:scale-105 transition-transform duration-500">
+          <div className="relative w-[350px] md:w-[500px] h-[400px] md:h-[500px] bg-linear-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transform group-hover:scale-105 transition-transform duration-500">
             {/* Header Bar */}
-            <div className="h-16 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-between px-6">
+            <div className="h-16 bg-linear-to-r from-indigo-600 to-purple-600 flex items-center justify-between px-6">
               <div className="flex gap-2">
                 <div className="w-3 h-3 rounded-full bg-white/80"></div>
                 <div className="w-3 h-3 rounded-full bg-white/60"></div>
@@ -180,7 +180,7 @@ export default function HeroSection() {
                 ].map((stat, index) => (
                   <div
                     key={index}
-                    className="p-3 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-lg text-center"
+                    className="p-3 bg-linear-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-lg text-center"
                   >
                     <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                       {stat.value}
@@ -194,20 +194,20 @@ export default function HeroSection() {
             </div>
 
             {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-linear-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
           </div>
 
           {/* Floating Elements */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-2xl opacity-20 blur-xl"
+            className="absolute -top-6 -right-6 w-20 h-20 bg-linear-to-br from-indigo-400 to-purple-600 rounded-2xl opacity-20 blur-xl"
           ></motion.div>
 
           <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute -bottom-6 -left-6 w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl opacity-20 blur-xl"
+            className="absolute -bottom-6 -left-6 w-24 h-24 bg-linear-to-br from-pink-400 to-purple-600 rounded-2xl opacity-20 blur-xl"
           ></motion.div>
         </motion.div>
       </motion.div>

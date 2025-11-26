@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+ 
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
@@ -20,14 +20,20 @@ export default function NewDeploymentPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [projectName, setProjectName] = useState("");
-    const [tempSessionId, setTempSessionId] = useState<string | null>(null);
+    const [, setTempSessionId] = useState<string | null>(null);
     const [showDeploymentLoading, setShowDeploymentLoading] = useState(false);
+
+    // Toast state
+    const [toast, setToast] = useState<{
+        message: string;
+        type: "success" | "error" | "warning";
+    } | null>(null);
 
     // 🔑 token + modal state
     const [showTokenModal, setShowTokenModal] = useState(false);
     const [personalToken, setPersonalToken] = useState("");
     const [tokenError, setTokenError] = useState<string | null>(null);
-    const [isTokenSubmitting, setIsTokenSubmitting] = useState(false);
+    const [isTokenSubmitting] = useState(false);
     const [agreePolicy, setAgreePolicy] = useState(false);
 
     useEffect(() => {
@@ -39,68 +45,24 @@ export default function NewDeploymentPage() {
     }, []);
 
   const router = useRouter();
-  // ----------------------
-  // FREE PLAN LIMIT CHECK
-  // ----------------------
-  useEffect(() => {
-    async function checkLimit() {
-      const res = await fetch("/api/deployments/list");
-      const data = await res.json();
 
-    const showToast = (
-        message: string,
-        type: "success" | "error" | "warning"
-    ) => {
-        setToast({ message, type });
-    };
+// Duplicate toast state removed
 
-    const validateRepositoryUrl = () => {
-        if (!provider) {
-            showToast("Please select a repository provider.", "error");
-            return false;
-        }
-        const isGitHub = repoUrl.includes("github.com");
-        const isGitLab = repoUrl.includes("gitlab.com");
-
-    checkLimit();
-  }, [router]);
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error" | "warning";
-  } | null>(null);
-
-<<<<<<< HEAD
   const showToast = (
     message: string,
     type: "success" | "error" | "warning"
   ) => {
     setToast({ message, type });
   };
-  const validateRepositoryUrl = () => {
-    if (!provider) {
-      showToast("Please select a repository provider.", "error");
-      return false;
-    }
-    const isGitHub = repoUrl.includes("github.com");
-    const isGitLab = repoUrl.includes("gitlab.com");
 
-    if (provider === "github" && !isGitHub) {
-      showToast("Invalid repository URL. Expected a GitHub URL.", "error");
-      return false;
-    }
-    if (provider === "gitlab" && !isGitLab) {
-      showToast("Invalid repository URL. Expected a GitLab URL.", "error");
-      return false;
-    }
-    return true;
-  };
 
-  const fetchBranches = async () => {
-    setError(null);
-    setSuccess(null);
+  // ----------------------
+  // FREE PLAN LIMIT CHECK
+  // ----------------------
+  useEffect(() => {
+  // 🔁 core function used both for normal + token-based branch fetch
+  }, [router]);
 
-    if (!validateRepositoryUrl()) return;
-=======
     // 🔁 core function used both for normal + token-based branch fetch
     const fetchBranchesInternal = async (token?: string) => {
         setSuccess(null);
@@ -177,120 +139,18 @@ export default function NewDeploymentPage() {
         }
     };
 
-    const fetchBranches = async () => {
-        if (!validateRepositoryUrl()) return;
-        // first attempt: no token
-        await fetchBranchesInternal();
-    };
-
-    // 🔑 called from modal when user submits token
-    const handleTokenSubmit = async () => {
-        if (!personalToken.trim()) {
-            setTokenError("Token is required for private repositories.");
-            return;
-        }
-        setTokenError(null);
-        setIsTokenSubmitting(true);
-
-        await fetchBranchesInternal(personalToken.trim());
-
-        setIsTokenSubmitting(false);
-
-        // If branches were successfully loaded, close modal
-        if (branches.length > 0 && !error) {
-            setShowTokenModal(false);
-            showToast("Branches loaded using your token.", "success");
-        }
-    };
->>>>>>> origin/chanchhay-dev
-
-    setLoading(true);
-
-<<<<<<< HEAD
-    const res = await fetch("/api/branches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        repoUrl,
-        userToken,
-      }),
-    });
-=======
-        const branchSelect = document.querySelector(
-            "#branch-select"
-        ) as HTMLSelectElement;
-        const branch = branchSelect?.value || selectedBranch || "main";
->>>>>>> origin/chanchhay-dev
-
-    const data = await res.json();
-    setLoading(false);
-
-<<<<<<< HEAD
-    if (data.private === true) {
-      setIsPrivateRepo(true);
-      showToast(
-        "🔒 This is a PRIVATE repository. Please enter a Personal Access Token.",
-        "warning"
-      );
-      setBranches([]);
-      return;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    function handleDeploy(_event: React.MouseEvent<HTMLButtonElement>): void {
+        throw new Error("Function not implemented.");
     }
 
-    setIsPrivateRepo(false);
-    setBranches(data.branches || []);
-
-    if (data.branches?.length > 0) {
-      setSelectedBranch(data.branches[0]);
-      setSuccess(`✅ ${data.branches.length} branches found.`);
-    } else {
-      showToast("No branches found.", "error");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    function handleTokenSubmit(_event: React.MouseEvent<HTMLButtonElement>): void {
+        throw new Error("Function not implemented.");
     }
-  };
-
-  const handleDeploy = async () => {
-    if (!repoUrl || !projectName) {
-      showToast("Please fill in all required fields.", "error");
-      return;
-    }
-    if (!tempSessionId) {
-      showToast("Session not ready yet. Please wait a moment.", "error");
-      return;
-    }
-
-    const branch = selectedBranch;
-
-    showToast(
-      `🚀 Deployment started\n\nProvider: ${provider}\nProject: ${projectName}\nBranch: ${branch}\nRepository: ${repoUrl}`,
-      "success"
-=======
-        setShowDeploymentLoading(true);
-        try {
-            const res = await fetch("/api/deploy", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    repoUrl,
-                    subdomain: projectName,
-                    branch,
-                    tempSessionId,
-                    personalToken: personalToken || null, // used only if needed
-                }),
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
-            } else {
-                showToast(`⚠️ Deployment failed: ${data.error}`, "error");
-            }
-        } catch (err) {
-            console.error(err);
-            showToast("Deployment failed due to an unexpected error.", "error");
-        }
-    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
             <div className="max-w-5xl mx-auto px-6 py-20">
                 {/* Header */}
                 <motion.div
@@ -299,7 +159,7 @@ export default function NewDeploymentPage() {
                     transition={{ duration: 0.6 }}
                     className="mb-12 text-center"
                 >
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-6 shadow-lg shadow-indigo-500/30">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 mb-6 shadow-lg shadow-indigo-500/30">
                         <svg
                             className="w-8 h-8 text-white"
                             fill="none"
@@ -314,7 +174,7 @@ export default function NewDeploymentPage() {
                             />
                         </svg>
                     </div>
-                    <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                    <h1 className="text-5xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
                         New Deployment
                     </h1>
                     <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -342,7 +202,7 @@ export default function NewDeploymentPage() {
                                 }`}
                             >
                                 <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         {toast.type === "success" && (
                                             <svg
                                                 className="w-6 h-6"
@@ -396,7 +256,7 @@ export default function NewDeploymentPage() {
                                     </div>
                                     <button
                                         onClick={() => setToast(null)}
-                                        className="flex-shrink-0 hover:opacity-70"
+                                        className="shrink-0 hover:opacity-70"
                                     >
                                         <svg
                                             className="w-5 h-5"
@@ -439,12 +299,12 @@ export default function NewDeploymentPage() {
                                 onClick={() => setProvider("github")}
                                 className={`relative overflow-hidden rounded-2xl p-6 border-2 transition-all duration-300 ${
                                     provider === "github"
-                                        ? "border-indigo-500 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50 shadow-lg shadow-indigo-500/20"
+                                        ? "border-indigo-500 bg-linear-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50 shadow-lg shadow-indigo-500/20"
                                         : "border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 hover:border-indigo-300 hover:shadow-md"
                                 }`}
                             >
                                 <div className="flex flex-col items-center gap-3">
-                                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 flex items-center justify-center shadow-lg">
+                                    <div className="w-16 h-16 rounded-xl bg-linear-to-br from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 flex items-center justify-center shadow-lg">
                                         <svg
                                             className="w-10 h-10 text-white dark:text-gray-900"
                                             fill="currentColor"
@@ -491,7 +351,7 @@ export default function NewDeploymentPage() {
                                 onClick={() => setProvider("gitlab")}
                                 className={`relative overflow-hidden rounded-2xl p-6 border-2 transition-all duration-300 ${
                                     provider === "gitlab"
-                                        ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/50 dark:to-red-950/50 shadow-lg shadow-orange-500/20"
+                                        ? "border-orange-500 bg-linear-to-br from-orange-50 to-red-50 dark:from-orange-950/50 dark:to-red-950/50 shadow-lg shadow-orange-500/20"
                                         : "border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 hover:border-orange-300 hover:shadow-md"
                                 }`}
                             >
@@ -569,9 +429,9 @@ export default function NewDeploymentPage() {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.99 }}
                         type="button"
-                        onClick={fetchBranches}
+                        onClick={() => fetchBranchesInternal()}
                         disabled={!repoUrl || loading}
-                        className="w-full mb-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transition-all duration-300"
+                        className="w-full mb-8 py-3.5 rounded-xl font-semibold text-white bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transition-all duration-300"
                     >
                         {loading ? (
                             <span className="flex items-center justify-center gap-2">
@@ -681,7 +541,7 @@ export default function NewDeploymentPage() {
                                     className="mt-3 text-sm text-rose-500 flex items-center gap-2 bg-rose-50 dark:bg-rose-950/30 px-4 py-2 rounded-lg"
                                 >
                                     <svg
-                                        className="w-5 h-5 flex-shrink-0"
+                                        className="w-5 h-5 shrink-0"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -704,7 +564,7 @@ export default function NewDeploymentPage() {
                                     className="mt-3 text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/30 px-4 py-2 rounded-lg"
                                 >
                                     <svg
-                                        className="w-5 h-5 flex-shrink-0"
+                                        className="w-5 h-5 shrink-0"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -815,7 +675,7 @@ export default function NewDeploymentPage() {
                         disabled={
                             !repoUrl || !projectName || !agreePolicy || loading
                         }
-                        className="w-full py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300"
+                        className="w-full py-4 rounded-xl font-bold text-lg text-white bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300"
                     >
                         <span className="flex items-center justify-center gap-3">
                             <svg
@@ -852,7 +712,7 @@ export default function NewDeploymentPage() {
                                 className="w-full max-w-md rounded-3xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 p-8 shadow-2xl"
                             >
                                 <div className="flex items-start gap-4 mb-6">
-                                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                                    <div className="shrink-0 w-12 h-12 rounded-xl bg-linear-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                                         <svg
                                             className="w-7 h-7 text-white"
                                             fill="none"
@@ -934,7 +794,7 @@ export default function NewDeploymentPage() {
                                         type="button"
                                         disabled={isTokenSubmitting}
                                         onClick={handleTokenSubmit}
-                                        className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 transition-all"
+                                        className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold bg-linear-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 transition-all"
                                     >
                                         {isTokenSubmitting
                                             ? "Verifying..."
@@ -956,229 +816,7 @@ export default function NewDeploymentPage() {
                 />
             </div>
         </div>
->>>>>>> origin/chanchhay-dev
     );
 
-    setLoading(true);
-    const res = await fetch("/api/deploy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        repoUrl,
-        subdomain: projectName,
-        branch,
-        tempSessionId,
-        personalToken: userToken,
-      }),
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-      setSuccess(`✅ Deployment started. Job ID: ${data.jobId}`);
-      setTimeout(() => router.push("/user"), 1500);
-    } else {
-      showToast(`⚠️ Deployment failed: ${data.error}`, "error");
-    }
-    setLoading(false);
-  };
-  return (
-    <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-10"
-      >
-        <h1 className="text-4xl font-semibold tracking-tight">
-          New Deployment
-        </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-          Enter your <span className="text-indigo-600 font-medium">PUBLIC</span>{" "}
-          repository details to deploy
-        </p>
-      </motion.div>
-      <AnimatePresence>
-        {toast && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onClose={() => setToast(null)}
-          />
-        )}
-      </AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition mb-8"
-      >
-        <label className="text-sm font-medium">
-          Repository Provider <span className="text-red-500">*</span>
-        </label>
-        <div className="grid grid-cols-2 gap-4 mt-3">
-          <button
-            type="button"
-            onClick={() => {
-              setProvider("github");
-              setIsPrivateRepo(false);
-              setUserToken("");
-            }}
-            className={`flex flex-col items-center justify-center rounded-lg py-4 transition cursor-pointer hover:shadow hover:border-gray-500 focus:outline-none focus:border-black focus:ring-2 focus:ring-black dark:focus:ring-black ${
-              provider === "github"
-                ? "dark:bg-indigo-900/30"
-                : "border-gray-300 dark:border-gray-600"
-            }`}
-          >
-            <Image
-              src="/github.svg"
-              width={40}
-              height={40}
-              className="mb-2"
-              alt="GitHub Image"
-            />
-            <span className="text-sm font-medium">GitHub</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setProvider("gitlab");
-              setIsPrivateRepo(false);
-              setUserToken("");
-            }}
-            className={`flex flex-col items-center justify-center rounded-lg py-4 transition cursor-pointer hover:shadow hover:border-orange-300 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 ${
-              provider === "gitlab"
-                ? "dark:bg-indigo-900/30"
-                : "border-gray-300 dark:border-gray-600"
-            }`}
-          >
-            <Image
-              src="/gitlab.png"
-              width={40}
-              height={40}
-              className="mb-2"
-              alt="GitLab Image"
-            />
-
-            <span className="text-sm font-medium text-orange-500">GitLab</span>
-          </button>
-        </div>
-      </motion.div>
-      <label htmlFor="" className="font-medium text-sm">
-        Repository URL <span className="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        value={repoUrl}
-        onChange={(e) => setRepoUrl(e.target.value)}
-        placeholder="https://github.com/username/project"
-        className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 mt-1 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
-        required
-      />
-      {isPrivateRepo && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <label className="font-medium text-sm">
-            Personal Access Token (required for private repo)
-            <span className="text-red-500"> *</span>
-          </label>
-          <input
-            type="password"
-            value={userToken}
-            onChange={(e) => setUserToken(e.target.value)}
-            placeholder="Your Personal Access Token"
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 mt-1 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
-          />
-        </motion.div>
-      )}
-      <button
-        type="button"
-        onClick={fetchBranches}
-        disabled={!repoUrl || loading}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-lg disabled:opacity-50 cursor-pointer"
-      >
-        {loading ? "Fetching branches..." : "Fetch Branches"}
-      </button>
-      <div className="mt-8">
-        <label htmlFor="" className="font-medium text-sm">
-          Branch <span className="text-red-500">*</span>
-        </label>
-        {branches.length === 0 && (
-          <select
-            name=""
-            id=""
-            disabled
-            className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 text-gray-500 cursor-not-allowed"
-          >
-            <option>Click &quot;Fetch Branches&quot; first...</option>
-          </select>
-        )}
-        {branches.length > 0 && (
-          <select
-            name=""
-            id="branch-select"
-            className="w-full border border-gray-300 dark:border-gray-700 px-3 py-2 rounded-lg mt-1 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-          >
-            {branches.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
-        )}
-        {error ? (
-          <p className="mt-2 text-sm text-orange-500 flex items-center gap-1">
-            ⚠️ {error}
-          </p>
-        ) : success ? (
-          <p className="mt-2 text-sm text-emerald-500 flex items-center gap-1">
-            {success}
-          </p>
-        ) : (
-          <p className="mt-2 text-sm text-gray-400">
-            Enter repository URL and click &quot;Fetch Branches&quot;
-          </p>
-        )}
-        <div className="mt-6">
-          <label className="block text-sm font-medium mb-1">
-            Project Name <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="my-project"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500"
-          />
-        </div>
-        <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-          <input type="checkbox" className="w-4 h-4" />
-          <span>
-            I agree to the{" "}
-            <button
-              type="button"
-              onClick={() =>
-                showToast(
-                  `Policy:\n\nPlease ensure your deployment follows company guidelines and security policies.\nProject must include "index.html" file.`,
-                  "warning"
-                )
-              }
-              className="text-indigo-400 underline hover:text-indigo-300 cursor-pointer"
-            >
-              Policy
-            </button>
-          </span>
-        </div>
-        <button
-          type="button"
-          onClick={handleDeploy}
-          className="mt-6 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition cursor-pointer"
-        >
-          Deploy Now
-        </button>
-      </div>
-    </div>
-  );
+/* Remove duplicate component code below this line. The main component is already defined above. */
 }

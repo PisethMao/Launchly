@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import Feature from "@/components/feature/Feature";
-
-export default function page() {
-  return (
-    <div>
-      <Feature  />
-    </div>
-  );
-}
-=======
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -198,7 +187,7 @@ const FeaturesPage = () => {
                 className="group relative"
             >
                 <div
-                    className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"
+                    className="absolute inset-0 bg-linear-to-r opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"
                     style={{
                         background: `linear-gradient(to right, var(--tw-gradient-stops))`,
                     }}
@@ -209,7 +198,7 @@ const FeaturesPage = () => {
         border border-slate-200 dark:border-slate-700/60 h-full"
                 >
                     <div
-                        className={`w-16 h-16 bg-gradient-to-r ${feature.color}
+                        className={`w-16 h-16 bg-linear-to-r ${feature.color}
           rounded-xl flex items-center justify-center mb-6
           group-hover:scale-110 transition-transform duration-300`}
                     >
@@ -224,7 +213,7 @@ const FeaturesPage = () => {
                     <div className="pt-6 border-t border-slate-100 dark:border-slate-700">
                         <div className="flex items-end gap-2">
                             <span
-                                className={`text-4xl font-bold bg-gradient-to-r ${feature.color} bg-clip-text text-transparent`}
+                                className={`text-4xl font-bold bg-linear-to-r ${feature.color} bg-clip-text text-transparent`}
                             >
                                 {feature.stats}
                             </span>
@@ -242,7 +231,7 @@ const FeaturesPage = () => {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             {/* HERO */}
             <div
-                className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"
+                className="relative overflow-hidden bg-linear-to-br from-slate-900 via-blue-900 to-slate-900"
             >
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
@@ -272,7 +261,7 @@ const FeaturesPage = () => {
                         <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
                             Everything You Need
                             <br />
-                            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                                 To Deploy & Scale
                             </span>
                         </h1>
@@ -324,7 +313,7 @@ const FeaturesPage = () => {
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                                     activeTab === tab.id
-                                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg scale-105"
+                                        ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg scale-105"
                                         : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                                 }`}
                             >
@@ -352,7 +341,7 @@ const FeaturesPage = () => {
                                         duration: 0.4,
                                         delay: index * 0.1,
                                     }}
-                                    className="bg-gradient-to-br from-slate-50 to-blue-50
+                                    className="bg-linear-to-br from-slate-50 to-blue-50
                 dark:from-slate-800/40 dark:to-slate-900/40
                 rounded-xl p-6 border border-slate-200 dark:border-slate-700
                 hover:border-blue-300 dark:hover:border-blue-500
@@ -378,7 +367,7 @@ const FeaturesPage = () => {
             </div>
 
             {/* STATS */}
-            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-20">
+            <div className="bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-4 gap-8 text-center">
                         {[
@@ -434,7 +423,7 @@ const FeaturesPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="bg-gradient-to-r from-slate-900 to-slate-800
+                    className="bg-linear-to-r from-slate-900 to-slate-800
           dark:from-black dark:to-slate-900
           rounded-3xl p-12 md:p-16 text-center shadow-2xl relative overflow-hidden"
                 >
@@ -474,4 +463,3 @@ const FeaturesPage = () => {
 };
 
 export default FeaturesPage;
->>>>>>> origin/chanchhay-dev

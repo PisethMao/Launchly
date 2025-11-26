@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/purity */
+ 
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +9,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
     const [progress, setProgress] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const steps = [
         { icon: "📦", label: "Cloning repository", duration: 2000 },
         { icon: "🔍", label: "Analyzing project structure", duration: 1500 },
@@ -53,7 +54,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
         }, 100);
 
         return () => clearInterval(interval);
-    }, [isOpen]);
+    }, [isOpen, onClose, steps]);
 
     if (!isOpen) return null;
 
@@ -69,7 +70,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="w-full max-w-2xl rounded-3xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700 p-8 shadow-2xl"
+                    className="w-full max-w-2xl rounded-3xl bg-linear-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700 p-8 shadow-2xl"
                 >
                     {/* Header */}
                     <div className="text-center mb-8">
@@ -82,7 +83,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                 rotate: { duration: 2, repeat: progress < 100 ? Infinity : 0, ease: "linear" },
                                 scale: { duration: 0.5 }
                             }}
-                            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4 shadow-lg shadow-indigo-500/30"
+                            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 mb-4 shadow-lg shadow-indigo-500/30"
                         >
                             <span className="text-4xl">
                                 {progress === 100 ? "🎉" : "🚀"}
@@ -111,12 +112,12 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.3, ease: "easeOut" }}
-                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full"
+                                className="absolute top-0 left-0 h-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full"
                             />
                             <motion.div
                                 animate={{ x: ["0%", "100%"] }}
                                 transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                                className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                className="absolute top-0 left-0 h-full w-1/3 bg-linear-to-r from-transparent via-white/30 to-transparent"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -141,7 +142,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                         : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
                                 }`}
                             >
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center text-2xl shadow-inner">
+                                <div className="shrink-0 w-12 h-12 rounded-xl bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center text-2xl shadow-inner">
                                     {index < currentStep ? (
                                         <motion.span
                                             initial={{ scale: 0 }}
@@ -169,7 +170,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                     <motion.div
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                        className="flex-shrink-0"
+                                        className="shrink-0"
                                     >
                                         <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -181,7 +182,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                     <motion.div
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
-                                        className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center"
+                                        className="shrink-0 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center"
                                     >
                                         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -197,7 +198,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-300 dark:border-emerald-700 text-center"
+                            className="p-4 rounded-xl bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-300 dark:border-emerald-700 text-center"
                         >
                             <p className="text-emerald-700 dark:text-emerald-300 font-semibold mb-2">
                                 🎊 Your project is now live!

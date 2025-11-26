@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 "use client";
 import { useState, useEffect } from "react";
 import {
@@ -67,7 +67,7 @@ export function UsersManagement() {
         <div className="space-y-6">
             <div className="flex items-center justify-between animate-fade-in">
                 <div>
-                    <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                    <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
                         Users Management
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -78,7 +78,7 @@ export function UsersManagement() {
                     onClick={() => {
                         redirect("/admin/users/create");
                     }}
-                    className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 active:scale-95 transform hover:scale-105 shadow-lg hover:shadow-2xl"
+                    className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-linear-to-r from-blue-600 to-cyan-600 text-white font-bold hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 active:scale-95 transform hover:scale-105 shadow-lg hover:shadow-2xl"
                 >
                     <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                     Create User
@@ -122,7 +122,7 @@ export function UsersManagement() {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden backdrop-blur-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
+                        <thead className="bg-linear-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-black text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                     ID
@@ -152,7 +152,7 @@ export function UsersManagement() {
                                     onMouseLeave={() => setHoveredRow(null)}
                                     className={`transition-all duration-300 ${
                                         hoveredRow === u.id
-                                            ? "bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 scale-[1.02] shadow-lg"
+                                            ? "bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 scale-[1.02] shadow-lg"
                                             : "hover:bg-gray-50 dark:hover:bg-gray-900"
                                     }`}
                                     style={{ animationDelay: `${idx * 50}ms` }}
@@ -172,10 +172,10 @@ export function UsersManagement() {
                                         <span
                                             className={`px-4 py-2 text-xs font-bold rounded-full shadow-md hover:shadow-lg transition-all transform hover:scale-110 ${
                                                 u.plan === "Enterprise"
-                                                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                                                    ? "bg-linear-to-r from-purple-500 to-pink-500 text-white"
                                                     : u.plan === "Pro"
-                                                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
-                                                    : "bg-gradient-to-r from-gray-400 to-gray-500 text-white"
+                                                    ? "bg-linear-to-r from-blue-500 to-cyan-500 text-white"
+                                                    : "bg-linear-to-r from-gray-400 to-gray-500 text-white"
                                             }`}
                                         >
                                             {u.plan}
@@ -185,8 +185,8 @@ export function UsersManagement() {
                                         <span
                                             className={`px-4 py-2 text-xs font-bold rounded-full shadow-md hover:shadow-lg transition-all transform hover:scale-110 ${
                                                 u.role === "admin"
-                                                    ? "bg-gradient-to-r from-red-500 to-orange-500 text-white"
-                                                    : "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+                                                    ? "bg-linear-to-r from-red-500 to-orange-500 text-white"
+                                                    : "bg-linear-to-r from-green-500 to-emerald-500 text-white"
                                             }`}
                                         >
                                             {u.role}

@@ -15,7 +15,7 @@ export default function App() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-950 dark:via-blue-950/30 dark:to-purple-950/30 transition-colors duration-500">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-950 dark:via-blue-950/30 dark:to-purple-950/30 transition-colors duration-500">
             <style>{`
                 @keyframes fade-in {
                     from { opacity: 0; transform: translateY(20px); }
@@ -53,7 +53,7 @@ export default function App() {
                     <div className="flex items-center justify-between">
                         {/* Logo/Brand */}
                         <div className="flex items-center gap-3 py-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
                                 <span className="text-white font-black text-xl">A</span>
                             </div>
                             <div>
@@ -77,7 +77,7 @@ export default function App() {
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`group relative flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 ${
                                             isActive
-                                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                                                ? "bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 scale-105"
                                                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                                         }`}
                                     >
