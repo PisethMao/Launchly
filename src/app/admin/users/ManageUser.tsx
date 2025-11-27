@@ -2,13 +2,10 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { useState, useEffect } from "react";
-import {
-    Search,
-    Edit,
-    Trash2,
-    Plus,
-} from "lucide-react";
+import { Search, Edit, Trash2, Plus } from "lucide-react";
 import { redirect } from "next/navigation";
+import UserDeleteLoading from "./DeleteUserLoading";
+import Toast from "./Toast";
 
 export function UsersManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -45,20 +42,35 @@ export function UsersManagement() {
         loadUsers();
     }, []);
 
+    const [toast, setToast] = useState<{
+        message: string;
+        type: "success" | "error" | "warning";
+    } | null>(null);
+
+    const showToast = (
+        message: string,
+        type: "success" | "error" | "warning"
+    ) => {
+        setToast({ message, type });
+    };
+
+    const [isDeleting, setIsDeleting] = useState(false);
     async function handleDelete(id: string) {
         if (!confirm("Are you sure you want to delete this user?")) return;
 
+        setIsDeleting(true);
         const res = await fetch(`/api/admin/users/${id}/delete`, {
             method: "DELETE",
             credentials: "include",
         });
 
         if (!res.ok) {
-            alert("Failed to delete user");
+            setIsDeleting(false);
+            showToast("Failed to delete user", "error");
             return;
         }
-        alert("User deleted successfully");
-
+        setIsDeleting(false);
+        showToast("User deleted successfully", "success");
         // Refresh UI (remove from list locally)
         setUsers(users.filter((u) => u.id !== id));
     }
@@ -230,6 +242,14 @@ export function UsersManagement() {
                     </div>
                 )}
             </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+            {isDeleting && <UserDeleteLoading />}
         </div>
     );
 }

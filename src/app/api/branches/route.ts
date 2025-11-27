@@ -1,32 +1,6 @@
 import { spawnSync } from "child_process";
 import { NextResponse } from "next/server";
 
-/* -------------------------------------------------
-   Build clone URL using user-provided token
----------------------------------------------------*/
-// export function buildCloneUrl(originalUrl: string, token?: string): string {
-//     const url = originalUrl.trim();
-
-//     // SSH URLs don't need token
-//     if (url.startsWith("git@")) return url;
-
-//     if (url.startsWith("https://") && token) {
-//         const host = new URL(url).host;
-
-//         // GitHub private repo
-//         if (host.includes("github.com")) {
-//             return url.replace("https://", `https://${token}@`);
-//         }
-
-//         // GitLab private repo
-//         if (host.includes("gitlab.com")) {
-//             return url.replace("https://", `https://oauth2:${token}@`);
-//         }
-//     }
-
-//     return url;
-// }
-
 export function buildCloneUrl(repoUrl: string, personalToken?: string) {
     if (!personalToken) return repoUrl.trim();
 
@@ -75,16 +49,6 @@ export async function POST(req: Request) {
 
     // First attempt → no token (unless provided)
     const cloneUrl = buildCloneUrl(repoUrl, personalToken);
-
-    // const result = spawnSync("git", ["ls-remote", "--heads", cloneUrl], {
-    //     encoding: "utf-8",
-    //     env: {
-    //         ...process.env,
-    //         GIT_TERMINAL_PROMPT: "0",
-    //         GCM_INTERACTIVE: "Never", // disables VS Code credential popup
-    //         GIT_ASKPASS: "echo", // forces empty credentials
-    //     },
-    // });
 
     const result = spawnSync("git", ["ls-remote", "--heads", cloneUrl], {
     encoding: "utf-8",

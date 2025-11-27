@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useEffect } from "react";
-import {
-    Search,
-    Activity,
-    Eye,
-    Trash2,
-} from "lucide-react";
+import { Search, Activity, Eye, Trash2 } from "lucide-react";
+import ProjectDeleteLoading from "./DeleteProjectLoading";
+import Toast from "./Toast";
 
 export function ProjectsManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -45,23 +42,39 @@ export function ProjectsManagement() {
         return matchesSearch && matchesStatus && matchesType;
     });
 
+    const [toast, setToast] = useState<{
+        message: string;
+        type: "success" | "error" | "warning";
+    } | null>(null);
+
+    const showToast = (
+        message: string,
+        type: "success" | "error" | "warning"
+    ) => {
+        setToast({ message, type });
+    };
+    const [isDeleting, setIsDeleting] = useState(false);
+
     async function handleDelete(id: number, subdomain: string) {
         const ok = confirm(
             `Delete project "${subdomain}"? This will stop PM2, delete files, DNS, and DB record.`
         );
         if (!ok) return;
 
+        setIsDeleting(true);
         const res = await fetch(`/api/admin/projects/${id}`, {
             method: "DELETE",
         });
 
         if (!res.ok) {
-            alert("Failed to delete project");
-            console.error(await res.text());
+            setIsDeleting(false);
+            showToast("Failed to delete project", "error");
             return;
         }
 
+        setIsDeleting(false);
         setProjects((prev) => prev.filter((p) => p.id !== id));
+        showToast(`Project "${subdomain}" deleted successfully!`, "success");
     }
 
     return (
@@ -233,6 +246,14 @@ export function ProjectsManagement() {
                     </div>
                 )}
             </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+            {isDeleting && <ProjectDeleteLoading />}
         </div>
     );
 }

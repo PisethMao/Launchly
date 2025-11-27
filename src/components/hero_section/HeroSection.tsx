@@ -11,7 +11,7 @@ export default function HeroSection() {
     transition: {
       duration: 3,
       repeat: Infinity,
-      ease: "easeInOut"
+      ease: "easeInOut" as const,
     }
   };
 
