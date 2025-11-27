@@ -22,7 +22,8 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="font-poppins relative flex flex-col-reverse items-center md:flex-row justify-between min-h-[90vh] px-6 md:px-20 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
+    <section className="flex justify-center items-center py-20 relative overflow-hidden bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950">
+    <div className="gap-10 max-w-screen-2xl font-poppins relative flex flex-col items-center lg:flex-row justify-between min-h-[90vh] px-6 md:px-30 overflow-hidden">
       {/* Content Section */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -45,7 +46,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Main Heading */}
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
           Deploy Websites{" "}
           <span className="block mt-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
             Effortlessly
@@ -123,14 +124,14 @@ export default function HeroSection() {
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1 }}
         viewport={{ once: true }}
-        className="flex-1 flex justify-center md:justify-end relative mb-12 md:mb-0"
+        className="flex-1 flex justify-center md:justify-end relative mt-10 lg:mt-0"
       >
         <motion.div
           animate={floatingAnimation}
           className="relative group"
         >
           {/* Main Card - Mock Dashboard */}
-          <div className="relative w-[350px] md:w-[500px] h-[400px] md:h-[500px] bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transform group-hover:scale-105 transition-transform duration-500">
+          <div className="relative w-[350px] md:w-[450px] xl:w-[600px] h-[400px] md:h-[500px] bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transform group-hover:scale-105 transition-transform duration-500">
             {/* Header Bar */}
             <div className="h-16 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-between px-6">
               <div className="flex gap-2">
@@ -227,6 +228,7 @@ export default function HeroSection() {
           backgroundSize: '4rem 4rem'
         }}></div>
       </div>
+    </div>
     </section>
   );
 }

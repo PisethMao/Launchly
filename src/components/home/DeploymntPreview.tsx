@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 
 export default function DeploymentPreview() {
     const [activeTab, setActiveTab] = useState("overview");
-    const [deployStatus, setDeployStatus] = useState("success");
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
@@ -110,30 +109,6 @@ export default function DeploymentPreview() {
                         <div className="relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 p-8">
                             {/* Sidebar & Main Content Layout */}
                             <div className="flex gap-6">
-                                {/* Sidebar */}
-                                <div className="w-48 space-y-2">
-                                    {[
-                                        "Overview",
-                                        "Deployments",
-                                        "Settings",
-                                        "Logs",
-                                    ].map((tab) => (
-                                        <button
-                                            key={tab}
-                                            onClick={() =>
-                                                setActiveTab(tab.toLowerCase())
-                                            }
-                                            className={`w-full text-left px-4 py-2.5 rounded-xl font-medium transition-all duration-300 ${
-                                                activeTab === tab.toLowerCase()
-                                                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                                                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                                            }`}
-                                        >
-                                            {tab}
-                                        </button>
-                                    ))}
-                                </div>
-
                                 {/* Main Content */}
                                 <div className="flex-1 space-y-6">
                                     {/* Deployment Status Card */}
