@@ -6,6 +6,10 @@ export const navItems: NavItem[] = [
         href: "/features"
     },
     {
+        name: "Docs",
+        href: "/docs"
+    },
+    {
         name: "Pricing",
         href: "/price"
     }
