@@ -1,6 +1,5 @@
- 
 "use client";
- 
+
 import React, { useState } from "react";
 import {
   Upload,
@@ -621,7 +620,10 @@ const DeploymentDocsPage = () => {
                 Choose any method above and get your project live in seconds. No
                 complex configuration required.
               </p>
-              <button className="group relative inline-flex items-center gap-3 bg-white text-blue-600 px-10 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300">
+              <button
+                type="button"
+                className="cursor-pointer group relative inline-flex items-center gap-3 bg-white text-blue-600 px-10 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300"
+              >
                 <span>Start Deploying Now</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>

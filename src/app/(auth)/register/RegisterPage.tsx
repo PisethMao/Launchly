@@ -4,16 +4,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React, { useState } from "react";
 export default function RegisterPage() {
+   
   const [email, setEmail] = useState("");
-
+   
   const [name, setName] = useState("");
-
+   
   const [password, setPassword] = useState("");
-
+   
   const [confirm, setConfirm] = useState("");
-
+   
   const [loading, setLoading] = useState(false);
-
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
