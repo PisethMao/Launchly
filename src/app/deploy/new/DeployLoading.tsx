@@ -1,23 +1,27 @@
  
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+interface DeploymentLoadingProps {
+  isOpen: boolean;
+  projectName?: string;
+  onClose: () => void;
+}
 
+// ✅ make steps a module-level constant so it's stable
+const STEPS = [
+  { icon: "📦", label: "Cloning repository", duration: 2000 },
+  { icon: "🔍", label: "Analyzing project structure", duration: 1500 },
+  { icon: "⚙️", label: "Installing dependencies", duration: 3000 },
+  { icon: "🔨", label: "Building project", duration: 2500 },
+  { icon: "🚀", label: "Deploying to server", duration: 2000 },
+  { icon: "✅", label: "Deployment complete!", duration: 1000 },
+];
 // Loading Component
-export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: any; projectName?: any; onClose?: () => void }) {
+export function DeploymentLoading({ isOpen, projectName, onClose } : DeploymentLoadingProps) {
     const [progress, setProgress] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const steps = [
-        { icon: "📦", label: "Cloning repository", duration: 2000 },
-        { icon: "🔍", label: "Analyzing project structure", duration: 1500 },
-        { icon: "⚙️", label: "Installing dependencies", duration: 3000 },
-        { icon: "🔨", label: "Building project", duration: 2500 },
-        { icon: "🚀", label: "Deploying to server", duration: 2000 },
-        { icon: "✅", label: "Deployment complete!", duration: 1000 }
-    ];
 
     useEffect(() => {
         if (!isOpen) {
@@ -27,7 +31,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
         }
 
         // Simulate deployment progress
-        const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);
+        const totalDuration = STEPS.reduce((sum, step) => sum + step.duration, 0);
         let elapsed = 0;
 
         const interval = setInterval(() => {
@@ -37,8 +41,8 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
 
             // Update current step based on progress
             let stepProgress = 0;
-            for (let i = 0; i < steps.length; i++) {
-                stepProgress += steps[i].duration;
+            for (let i = 0; i < STEPS.length; i++) {
+                stepProgress += STEPS[i].duration;
                 if (elapsed < stepProgress) {
                     setCurrentStep(i);
                     break;
@@ -54,7 +58,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
         }, 100);
 
         return () => clearInterval(interval);
-    }, [isOpen, onClose, steps]);
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -124,8 +128,8 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                     </div>
 
                     {/* Steps */}
-                    <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-                        {steps.map((step, index) => (
+                    <div className="space-y-3 mb-6">
+                        {STEPS.map((step, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, x: -20 }}
@@ -217,16 +221,20 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                     key={i}
                                     className="absolute w-2 h-2 bg-indigo-400 rounded-full opacity-20"
                                     initial={{
+                                        // eslint-disable-next-line react-hooks/purity
                                         x: Math.random() * 100 + "%",
                                         y: "100%"
                                     }}
                                     animate={{
                                         y: "-100%",
+                                        // eslint-disable-next-line react-hooks/purity
                                         x: Math.random() * 100 + "%"
                                     }}
                                     transition={{
+                                        // eslint-disable-next-line react-hooks/purity
                                         duration: Math.random() * 3 + 2,
                                         repeat: Infinity,
+                                        // eslint-disable-next-line react-hooks/purity
                                         delay: Math.random() * 2,
                                         ease: "linear"
                                     }}

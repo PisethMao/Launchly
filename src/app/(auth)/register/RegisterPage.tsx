@@ -14,7 +14,7 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState("");
    
   const [loading, setLoading] = useState(false);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+   
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -56,7 +56,7 @@ export default function RegisterPage() {
     }, 800);
   };
   return (
-    <main className="elative flex min-h-[90vh] items-center justify-center px-6 font-poppins">
+    <main className="relative flex min-h-[90vh] items-center justify-center px-6 font-poppins">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-[10%] top-[15%] h-[350px] w-[350px] rounded-full bg-indigo-500/20 blur-3xl"></div>
         <div className="absolute right-[10%] bottom-[10%] h-[350px] w-[350px] rounded-full bg-blue-400/20 blur-3xl"></div>

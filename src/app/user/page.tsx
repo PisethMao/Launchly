@@ -37,25 +37,46 @@ export default function page() {
   const { data: session } = useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    const load = () => {
-      fetch("/api/deployments/list", { cache: "no-store" })
-        .then((res) => res.json())
-        .then((data) => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/deployments/list", { cache: "no-store" });
+        if (!res.ok) {
+          console.error(
+            "Failed to fetch deployments: ",
+            res.status,
+            res.statusText
+          );
+          return;
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          console.error("Expected JSON but got: ", contentType);
+          return;
+        }
+        const data = await res.json();
+        if (!cancelled && data?.deployments) {
           const formatted = data.deployments.map((d: DeploymentRecord) => ({
             id: d.id,
-            name: d.subdomain,
+            name: d.projectName || d.subdomain || "Unnamed project",
             liveUrl: d.liveUrl ?? "http://not-deployed-yet",
             status: d.status === "running" ? "Healthy" : "Building",
             updatedAt: new Date(d.createdAt).toLocaleString(),
           }));
           setDeployments(formatted);
-        });
+        }
+      } catch (err) {
+        console.error("Error fetching deployments: ", err);
+      }
     };
 
     load(); // first fetch
     const interval = setInterval(load, 3000); // every 5 seconds
 
-    return () => clearInterval(interval);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -70,7 +91,7 @@ export default function page() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="space-y-2">
               <h1 className="text-5xl font-bold tracking-tight bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Welcome back, {session?.user?.name}
+                Welcome {session?.user?.name}
               </h1>
               <div className="flex items-center gap-2 text-sm">
                 <div className="px-3 py-1.5 rounded-full bg-linear-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-200/50 dark:border-indigo-500/30">
