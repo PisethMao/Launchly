@@ -14,14 +14,14 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const} },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export default function HowItWorks() {
   return (
     <section
       aria-labelledby="how-it-works"
-      className="font-poppins relative isolate overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+      className="font-poppins relative isolate overflow-hidden bg-linear-to-b from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
     >
       {/* Background Effects */}
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -64,7 +64,7 @@ export default function HowItWorks() {
 
           <h2
             id="how-it-works"
-            className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent"
+            className="text-4xl md:text-5xl font-bold tracking-tight bg-linear-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent"
           >
             How Launchly Works
           </h2>
@@ -82,7 +82,7 @@ export default function HowItWorks() {
           className="relative grid gap-8 md:grid-cols-3 mb-16"
         >
           {/* Connecting Line (Desktop) */}
-          <div className="hidden md:block absolute top-14 left-[16.666%] right-[16.666%] h-0.5 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 dark:from-indigo-900 dark:via-purple-900 dark:to-indigo-900"></div>
+          <div className="hidden md:block absolute top-14 left-[16.666%] right-[16.666%] h-0.5 bg-linear-to-r from-indigo-200 via-purple-200 to-indigo-200 dark:from-indigo-900 dark:via-purple-900 dark:to-indigo-900"></div>
 
           {STEPS.map(({ id, title, desc, Icon }, index) => (
             <motion.li
@@ -94,16 +94,16 @@ export default function HowItWorks() {
               {/* Card */}
               <div className="relative h-full rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white dark:bg-gray-900/50 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
                 {/* Gradient Hover Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-500"></div>
 
                 {/* Top Border Accent */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 {/* Step Number Badge */}
                 <div className="relative flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:shadow-indigo-500/50 transition-shadow duration-300">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:shadow-indigo-500/50 transition-shadow duration-300">
                         <Icon className="h-7 w-7 text-white" />
                       </div>
                       <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-900 border-2 border-indigo-500">
@@ -136,13 +136,13 @@ export default function HowItWorks() {
                     {id === 1 && (
                       <>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             OAuth secure connection
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             Auto-detect static vs. Node
                           </span>
@@ -152,13 +152,13 @@ export default function HowItWorks() {
                     {id === 2 && (
                       <>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             Dockerized, isolated builds
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             Real-time build logs
                           </span>
@@ -168,13 +168,13 @@ export default function HowItWorks() {
                     {id === 3 && (
                       <>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             Free subdomain instantly
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                           <span className="text-sm text-gray-700 dark:text-gray-300">
                             Automatic HTTPS
                           </span>
@@ -185,7 +185,7 @@ export default function HowItWorks() {
                 </div>
 
                 {/* Bottom Accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-indigo-500/20 to-transparent"></div>
               </div>
             </motion.li>
           ))}
@@ -202,7 +202,7 @@ export default function HowItWorks() {
           <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-2 bg-gray-100 dark:bg-gray-900/50 rounded-2xl backdrop-blur-sm border border-gray-200 dark:border-gray-800">
             <Link
               href="/deploy/new"
-              className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
+              className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
             >
               <span>Github/Gitlab Deploy</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -224,7 +224,7 @@ export default function HowItWorks() {
       </div>
 
       {/* Bottom Decorative Element */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-indigo-500/20 to-transparent"></div>
     </section>
   );
 }

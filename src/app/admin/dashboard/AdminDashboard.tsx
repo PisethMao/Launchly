@@ -2,7 +2,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import {
-    Search,
     Users,
     FolderGit2,
     Rocket,
@@ -11,9 +10,7 @@ import {
     Sparkles,
     Activity,
     Zap,
-    Eye,
-    Edit,
-    Trash2,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Plus,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -74,13 +71,13 @@ function StatCard({
 
     return (
         <div
-            className={`relative overflow-hidden bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transform transition-all duration-700 ${
+            className={`relative overflow-hidden bg-linear-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transform transition-all duration-700 ${
                 isVisible
                     ? "translate-y-0 opacity-100"
                     : "translate-y-8 opacity-0"
             } hover:scale-105 hover:shadow-2xl group cursor-pointer`}
         >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-blue-400/10 to-purple-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
 
             <div className="relative flex items-start justify-between">
                 <div className="flex-1">
@@ -88,12 +85,12 @@ function StatCard({
                         {title}
                         <Sparkles className="w-3 h-3 text-yellow-500 animate-pulse" />
                     </p>
-                    <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-3 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                    <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-3 bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text">
                         {counter.toLocaleString()}
                     </h3>
                     {change && (
                         <div className="flex items-center gap-2 animate-bounce">
-                            <div className="flex items-center px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full shadow-lg">
+                            <div className="flex items-center px-3 py-1 bg-linear-to-r from-green-500 to-emerald-500 rounded-full shadow-lg">
                                 <TrendingUp className="w-3 h-3 text-white mr-1" />
                                 <span className="text-white font-bold text-xs">
                                     +{change}
@@ -112,7 +109,7 @@ function StatCard({
                 </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
         </div>
     );
 }
@@ -153,7 +150,7 @@ export function Dashboard() {
                 }`}
             >
                 <div>
-                    <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text">
                         Admin Dashboard
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400 flex items-center gap-2 text-lg">
@@ -200,9 +197,9 @@ export function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 rounded-2xl shadow-lg p-6 border border-orange-200 dark:border-orange-800 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+                <div className="bg-linear-to-br from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 rounded-2xl shadow-lg p-6 border border-orange-200 dark:border-orange-800 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl shadow-lg">
+                        <div className="p-3 bg-linear-to-br from-orange-500 to-red-500 rounded-xl shadow-lg">
                             <Activity className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -229,9 +226,9 @@ export function Dashboard() {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-2xl shadow-lg p-6 border border-blue-200 dark:border-blue-800 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+                <div className="bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-2xl shadow-lg p-6 border border-blue-200 dark:border-blue-800 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl shadow-lg">
+                        <div className="p-3 bg-linear-to-br from-blue-500 to-indigo-500 rounded-xl shadow-lg">
                             <Zap className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">

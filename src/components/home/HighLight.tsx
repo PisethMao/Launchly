@@ -22,14 +22,14 @@ const cardVariants = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number], // Custom easing for smooth entrance
-    }
+      ease: "easeInOut",
+    },
   },
 };
 
 export default function HighLight() {
   return (
-    <section className="font-poppins relative isolate py-20 md:py-32 overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+    <section className="font-poppins relative isolate py-20 md:py-32 overflow-hidden bg-linear-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
       {/* Animated Background Elements */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         {/* Gradient Orbs */}
@@ -43,7 +43,7 @@ export default function HighLight() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-1/4 -left-48 w-96 h-96 bg-gradient-to-br from-indigo-400/30 to-purple-400/30 rounded-full blur-3xl"
+          className="absolute top-1/4 -left-48 w-96 h-96 bg-linear-to-br from-indigo-400/30 to-purple-400/30 rounded-full blur-3xl"
         ></motion.div>
 
         <motion.div
@@ -57,7 +57,7 @@ export default function HighLight() {
             ease: "easeInOut",
             delay: 1,
           }}
-          className="absolute bottom-1/4 -right-48 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+          className="absolute bottom-1/4 -right-48 w-96 h-96 bg-linear-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
         ></motion.div>
 
         {/* Floating Particles */}
@@ -108,17 +108,20 @@ export default function HighLight() {
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-full border border-indigo-200/50 dark:border-indigo-900/50"
+          className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-linear-to-r from-indigo-100 to-purple-100 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-full border border-indigo-200/50 dark:border-indigo-900/50"
         >
-          <Zap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="currentColor" />
-          <span className="text-sm font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 dark:from-indigo-300 dark:to-purple-300 bg-clip-text text-transparent">
+          <Zap
+            className="w-4 h-4 text-indigo-600 dark:text-indigo-400"
+            fill="currentColor"
+          />
+          <span className="text-sm font-semibold bg-linear-to-r from-indigo-700 to-purple-700 dark:from-indigo-300 dark:to-purple-300 bg-clip-text text-transparent">
             Built for Developers
           </span>
         </motion.div>
 
         {/* Title */}
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-          <span className="bg-gradient-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
             Why Launchly?
           </span>
         </h2>
@@ -146,31 +149,31 @@ export default function HighLight() {
               whileHover={{
                 y: -12,
                 scale: 1.02,
-                transition: { duration: 0.3, ease: "easeOut" }
+                transition: { duration: 0.3, ease: "easeOut" },
               }}
               className="group relative"
             >
               {/* Card */}
               <div className="relative h-full rounded-3xl border border-gray-200/70 dark:border-gray-800/70 bg-white/80 dark:bg-gray-900/50 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                 {/* Animated Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-700"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-700"></div>
 
                 {/* Top Accent Bar */}
                 <motion.div
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
-                  className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left"
+                  className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left"
                 ></motion.div>
 
                 {/* Icon Container */}
                 <div className="relative mb-6">
                   <div className="relative inline-flex">
                     {/* Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+                    <div className="absolute inset-0 bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
 
                     {/* Icon Circle */}
-                    <div className="relative h-16 w-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:shadow-indigo-500/50 transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
+                    <div className="relative h-16 w-16 flex items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:shadow-indigo-500/50 transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
                       <Icon className="h-8 w-8 text-white" />
                     </div>
 
@@ -187,7 +190,10 @@ export default function HighLight() {
                       }}
                       className="absolute -top-1 -right-1"
                     >
-                      <Sparkles className="w-5 h-5 text-yellow-400" fill="currentColor" />
+                      <Sparkles
+                        className="w-5 h-5 text-yellow-400"
+                        fill="currentColor"
+                      />
                     </motion.div>
                   </div>
                 </div>
@@ -203,21 +209,21 @@ export default function HighLight() {
                 </div>
 
                 {/* Bottom Shine Effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent"></div>
 
                 {/* Corner Accent */}
                 <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-indigo-500/0 group-hover:border-indigo-500/40 rounded-br-xl transition-all duration-500"></div>
               </div>
 
               {/* Outer Glow on Hover */}
-              <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/20 group-hover:to-purple-500/20 blur-2xl transition-all duration-500"></div>
+              <div className="absolute inset-0 -z-10 rounded-3xl bg-linear-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/20 group-hover:to-purple-500/20 blur-2xl transition-all duration-500"></div>
             </motion.div>
           ))}
         </motion.div>
       </div>
 
       {/* Bottom Decorative Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent"></div>
     </section>
   );
 }

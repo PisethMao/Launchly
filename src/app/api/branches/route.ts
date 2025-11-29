@@ -1,103 +1,107 @@
-import { spawnSync } from "child_process";
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
+import { spawnSync } from "child_process";
 
-export function buildCloneUrl(repoUrl: string, personalToken?: string) {
-    if (!personalToken) return repoUrl.trim();
+// ------------------------------
+// GITHUB visibility
+// ------------------------------
+async function isGitHubPrivate(repoUrl: string, token?: string) {
+  if (!repoUrl.includes("github.com")) return null;
 
-    let url = repoUrl.trim();
+  const clean = repoUrl.replace("https://github.com/", "").replace(".git", "");
+  const apiUrl = `https://api.github.com/repos/${clean}`;
 
-    // Normalize SSH → HTTPS
-    if (url.startsWith("git@")) {
-        url = url.replace("git@", "https://").replace(":", "/");
-    }
+  const res = await fetch(apiUrl, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
-    // Force .git suffix (GitLab requires it)
-    if (!url.endsWith(".git")) {
-        url += ".git";
-    }
+  if (res.status === 404 || res.status === 403) return true;
 
-    // GITHUB
-    if (url.includes("github.com")) {
-        return url.replace(/^https:\/\//, `https://${personalToken}@`);
-    }
-
-    // GITLAB
-    if (url.includes("gitlab.com")) {
-        return url.replace(
-            /^https:\/\//,
-            `https://oauth2:${personalToken}@`
-        );
-    }
-
-    // fallback
-    return url.replace(/^https:\/\//, `https://${personalToken}@`);
+  const data = await res.json();
+  return data.private === true;
 }
 
+// ------------------------------
+// GITLAB visibility (API uses lowercase)
+// ------------------------------
+async function isGitLabPrivate(repoUrl: string, token?: string) {
+  if (!repoUrl.includes("gitlab.com")) return null;
 
-/* -------------------------------------------------
-   Main handler
----------------------------------------------------*/
+  const cleanLower = repoUrl
+    .replace("https://gitlab.com/", "")
+    .replace(".git", "")
+    .trim()
+    .toLowerCase();
+
+  const encoded = encodeURIComponent(cleanLower);
+
+  const res = await fetch(`https://gitlab.com/api/v4/projects/${encoded}`, {
+    headers: token ? { "PRIVATE-TOKEN": token } : {},
+  });
+
+  if (res.status === 401 || res.status === 403) return true;
+  if (res.status === 200) {
+    const data = await res.json();
+    return data.visibility === "private";
+  }
+
+  return true;
+}
+
+// ------------------------------
+// MAIN
+// ------------------------------
 export async function POST(req: Request) {
-    const { repoUrl, personalToken } = await req.json();
+  const { repoUrl, userToken } = await req.json();
 
-    if (!repoUrl) {
-        return NextResponse.json(
-            { error: "Missing repository URL" },
-            { status: 400 }
-        );
+  const isGitHub = repoUrl.includes("github.com");
+  const isGitLab = repoUrl.includes("gitlab.com");
+
+  let isPrivate = null;
+
+  if (isGitHub) isPrivate = await isGitHubPrivate(repoUrl, userToken);
+  if (isGitLab) isPrivate = await isGitLabPrivate(repoUrl, userToken);
+
+  if (isPrivate && !userToken) {
+    return NextResponse.json({ private: true, branches: [] });
+  }
+
+  // ------------------------------
+  // Build clone URL (correct case!)
+  // ------------------------------
+  let cloneUrl = repoUrl;
+
+  if (userToken) {
+    if (isGitHub) {
+      cloneUrl = repoUrl.replace("https://", `https://${userToken}@`);
     }
 
-    // First attempt → no token (unless provided)
-    const cloneUrl = buildCloneUrl(repoUrl, personalToken);
+    if (isGitLab) {
+      const cleanOriginal = repoUrl
+        .replace("https://gitlab.com/", "")
+        .replace(".git", "")
+        .trim(); // KEEP EXACT CASE
 
-    const result = spawnSync("git", ["ls-remote", "--heads", cloneUrl], {
+      cloneUrl = `https://oauth2:${userToken}@gitlab.com/${cleanOriginal}.git`;
+    }
+  }
+
+  // ------------------------------
+  // Fetch branches
+  // ------------------------------
+  const result = spawnSync("git", ["ls-remote", "--heads", cloneUrl], {
     encoding: "utf-8",
-    env: {
-        ...process.env,
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+  });
 
-        // Kill ALL prompting
-        GIT_TERMINAL_PROMPT: "0",
-        GIT_ASKPASS: "echo",
-        GCM_INTERACTIVE: "Never",
+  if (result.status !== 0 || !result.stdout.trim()) {
+    return NextResponse.json({ private: true, branches: [] });
+  }
 
-        // Kill Credential Manager
-        GIT_CREDENTIAL_HELPER: " ",
-        GIT_CREDENTIAL_USEHTTPPATH: "0",
+  const branches = result.stdout
+    .split("\n")
+    .map((line) => line.split(/\s+/)[1]?.replace("refs/heads/", ""))
+    .filter(Boolean);
 
-        // Prevent VS Code from injecting credentials
-        GIT_EXEC_PATH: "",
-        GIT_CONFIG_GLOBAL: "/dev/null",
-    },
-});
-
-
-    // ---------------------- PRIVATE REPO DETECTED ----------------------
-    // Status 128 = authentication error, repo not found, permission denied, etc.
-    if (result.status !== 0) {
-        // If token NOT provided → tell frontend “private repo”
-        if (!personalToken) {
-            return NextResponse.json(
-                { private: true, message: "Token required for private repo" },
-                { status: 401 }
-            );
-        }
-
-        // Token WAS provided but still failing → invalid token
-        return NextResponse.json(
-            { error: "Invalid token or no access", debug: result.stderr },
-            { status: 403 }
-        );
-    }
-
-    // ---------------------- SUCCESS: extract branches ----------------------
-    const branches = result.stdout
-        .split("\n")
-        .map((line) => {
-            const parts = line.split(/\s+/);
-            const ref = parts[1] || "";
-            return ref.replace("refs/heads/", "");
-        })
-        .filter(Boolean);
-
-    return NextResponse.json({ branches });
+  return NextResponse.json({ private: false, branches });
 }

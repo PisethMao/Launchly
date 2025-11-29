@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/adminAuth";
@@ -10,9 +12,9 @@ export async function GET(req: Request) {
             { status: 403 }
         );
 
-    const users = await prisma.user.findMany({
-        include: { deployments: true },
-    });
+  const users = await prisma.user.findMany({
+    include: { deployments: true },
+  });
 
-    return NextResponse.json(users);
+  return NextResponse.json(users);
 }

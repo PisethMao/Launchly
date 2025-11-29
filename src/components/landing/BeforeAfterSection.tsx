@@ -36,7 +36,7 @@ export default function BeforeAfterSection() {
   ];
 
   return (
-    <section className="font-poppins relative py-24 md:py-32 overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <section className="font-poppins relative py-24 md:py-32 overflow-hidden bg-linear-to-b from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/5 dark:bg-red-500/10 rounded-full blur-3xl"></div>
@@ -56,7 +56,7 @@ export default function BeforeAfterSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-gradient-to-r from-red-100 via-yellow-100 to-green-100 dark:from-red-950/50 dark:via-yellow-950/50 dark:to-green-950/50 rounded-full border border-gray-200 dark:border-gray-800"
+            className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-linear-to-r from-red-100 via-yellow-100 to-green-100 dark:from-red-950/50 dark:via-yellow-950/50 dark:to-green-950/50 rounded-full border border-gray-200 dark:border-gray-800"
           >
             <Clock className="w-4 h-4 text-red-600 dark:text-red-400" />
             <ArrowRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
@@ -64,7 +64,7 @@ export default function BeforeAfterSection() {
           </motion.div>
 
           <h2 className="font-bold text-4xl md:text-5xl lg:text-6xl mb-5">
-            <span className="bg-gradient-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
               Before vs After Launchly
             </span>
           </h2>
@@ -92,14 +92,14 @@ export default function BeforeAfterSection() {
             whileHover={{ y: -8 }}
             className="group relative"
           >
-            <div className="relative h-full p-8 md:p-10 rounded-3xl border-2 border-red-200/80 dark:border-red-900/50 bg-gradient-to-br from-white to-red-50/30 dark:from-gray-900 dark:to-red-950/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
+            <div className="relative h-full p-8 md:p-10 rounded-3xl border-2 border-red-200/80 dark:border-red-900/50 bg-linear-to-br from-white to-red-50/30 dark:from-gray-900 dark:to-red-950/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
               {/* Top Accent */}
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-red-500 via-orange-500 to-red-500"></div>
 
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-orange-600 shadow-lg">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-red-500 to-orange-600 shadow-lg">
                     <Frown className="h-7 w-7 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -119,7 +119,7 @@ export default function BeforeAfterSection() {
                     viewport={{ once: true }}
                     className="flex items-start gap-4 group/item"
                   >
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="shrink-0 mt-0.5">
                       <div className="relative">
                         <div className="absolute inset-0 bg-red-500/20 rounded-full blur-md group-hover/item:blur-lg transition-all"></div>
                         <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/50 border-2 border-red-300 dark:border-red-800">
@@ -143,7 +143,7 @@ export default function BeforeAfterSection() {
               </div>
 
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-orange-500/0 to-red-500/0 group-hover:from-red-500/5 group-hover:via-orange-500/5 group-hover:to-red-500/5 transition-all duration-700 pointer-events-none"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-red-500/0 via-orange-500/0 to-red-500/0 group-hover:from-red-500/5 group-hover:via-orange-500/5 group-hover:to-red-500/5 transition-all duration-700 pointer-events-none"></div>
             </div>
           </motion.div>
 
@@ -155,7 +155,7 @@ export default function BeforeAfterSection() {
           >
             <div className="relative h-full p-8 md:p-10 rounded-3xl border-2 border-green-300/80 dark:border-green-900/50 bg-gradient-to-br from-white to-green-50/30 dark:from-gray-900 dark:to-green-950/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
               {/* Top Accent */}
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-green-500 via-emerald-500 to-green-500"></div>
 
               {/* Glow Effect */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl"></div>
@@ -165,11 +165,11 @@ export default function BeforeAfterSection() {
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="absolute inset-0 bg-green-500/30 rounded-2xl blur-xl animate-pulse"></div>
-                    <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+                    <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-green-500 to-emerald-600 shadow-lg">
                       <Smile className="h-7 w-7 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                  <h3 className="text-2xl font-bold bg-linear-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
                     After Launchly
                   </h3>
                 </div>
@@ -186,7 +186,7 @@ export default function BeforeAfterSection() {
                     viewport={{ once: true }}
                     className="flex items-start gap-4 group/item"
                   >
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="shrink-0 mt-0.5">
                       <div className="relative">
                         <div className="absolute inset-0 bg-green-500/20 rounded-full blur-md group-hover/item:blur-lg transition-all"></div>
                         <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-950/50 border-2 border-green-300 dark:border-green-800">
@@ -210,7 +210,7 @@ export default function BeforeAfterSection() {
               </div>
 
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 via-emerald-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:via-emerald-500/5 group-hover:to-green-500/5 transition-all duration-700 pointer-events-none"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-green-500/0 via-emerald-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:via-emerald-500/5 group-hover:to-green-500/5 transition-all duration-700 pointer-events-none"></div>
 
               {/* Success Indicator */}
               <motion.div
@@ -221,7 +221,7 @@ export default function BeforeAfterSection() {
             </div>
 
             {/* Outer Glow */}
-            <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-green-500/0 to-emerald-500/0 group-hover:from-green-500/20 group-hover:to-emerald-500/20 blur-2xl transition-all duration-500"></div>
+            <div className="absolute inset-0 -z-10 rounded-3xl bg-linear-to-br from-green-500/0 to-emerald-500/0 group-hover:from-green-500/20 group-hover:to-emerald-500/20 blur-2xl transition-all duration-500"></div>
           </motion.div>
         </motion.div>
 

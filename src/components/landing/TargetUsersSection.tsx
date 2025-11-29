@@ -67,7 +67,7 @@ export default function TargetUsersSection() {
   ];
 
   return (
-    <section className="py-24 md:py-32 font-poppins relative overflow-hidden bg-gradient-to-b from-white via-indigo-50/30 to-white dark:from-gray-950 dark:via-indigo-950/20 dark:to-gray-950">
+    <section className="py-24 md:py-32 font-poppins relative overflow-hidden bg-linear-to-b from-white via-indigo-50/30 to-white dark:from-gray-950 dark:via-indigo-950/20 dark:to-gray-950">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -99,16 +99,16 @@ export default function TargetUsersSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-full border border-indigo-200/50 dark:border-indigo-900/50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 bg-linear-to-r from-indigo-100 to-purple-100 dark:from-indigo-950/50 dark:to-purple-950/50 rounded-full border border-indigo-200/50 dark:border-indigo-900/50"
           >
             <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-            <span className="text-sm font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 dark:from-indigo-300 dark:to-purple-300 bg-clip-text text-transparent">
+            <span className="text-sm font-semibold bg-linear-to-r from-indigo-700 to-purple-700 dark:from-indigo-300 dark:to-purple-300 bg-clip-text text-transparent">
               Perfect For Everyone
             </span>
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-            <span className="bg-gradient-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-gray-900 via-indigo-900 to-gray-900 dark:from-white dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">
               Who is Launchly For?
             </span>
           </h2>
@@ -138,9 +138,9 @@ export default function TargetUsersSection() {
               className="group relative"
             >
               {/* Card */}
-              <div className={`relative h-full p-8 rounded-3xl border border-gray-200/70 dark:border-gray-800/70 bg-gradient-to-br ${user.bgGradient} backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden`}>
+              <div className={`relative h-full p-8 rounded-3xl border border-gray-200/70 dark:border-gray-800/70 bg-linear-to-br ${user.bgGradient} backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden`}>
                 {/* Top Accent Bar */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${user.gradient}`}></div>
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r ${user.gradient}`}></div>
 
                 {/* Icon Container */}
                 <div className="relative mb-6">
@@ -169,7 +169,7 @@ export default function TargetUsersSection() {
 
                 {/* Content */}
                 <div className="relative">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:bg-linear-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                     {user.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 mb-6">
@@ -178,7 +178,7 @@ export default function TargetUsersSection() {
 
                   {/* Hover CTA */}
                   <div className="flex items-center gap-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                    <span className={`bg-gradient-to-r ${user.gradient} bg-clip-text text-transparent`}>
+                    <span className={`bg-linear-to-r ${user.gradient} bg-clip-text text-transparent`}>
                       Learn more
                     </span>
                     <ArrowRight className={`w-4 h-4 text-${user.accentColor}-600 dark:text-${user.accentColor}-400 group-hover:translate-x-1 transition-transform`} />
@@ -186,17 +186,17 @@ export default function TargetUsersSection() {
                 </div>
 
                 {/* Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${user.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-700 pointer-events-none`}></div>
+                <div className={`absolute inset-0 bg-linear-to-br ${user.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-700 pointer-events-none`}></div>
 
                 {/* Bottom Shine */}
-                <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-${user.accentColor}-500/30 to-transparent`}></div>
+                <div className={`absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-${user.accentColor}-500/30 to-transparent`}></div>
 
                 {/* Corner Accent */}
-                <div className={`absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-br ${user.gradient} opacity-50 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500`}></div>
+                <div className={`absolute top-4 right-4 w-2 h-2 rounded-full bg-linear-to-br ${user.gradient} opacity-50 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500`}></div>
               </div>
 
               {/* Outer Glow on Hover */}
-              <div className={`absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br ${user.gradient} opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500`}></div>
+              <div className={`absolute inset-0 -z-10 rounded-3xl bg-linear-to-br ${user.gradient} opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500`}></div>
             </motion.div>
           ))}
         </motion.div>
@@ -209,7 +209,7 @@ export default function TargetUsersSection() {
           transition={{ delay: 0.6, duration: 0.7 }}
           className="mt-16 text-center"
         >
-          <div className="inline-flex flex-col items-center gap-4 p-8 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 border border-indigo-200/50 dark:border-indigo-900/50">
+          <div className="inline-flex flex-col items-center gap-4 p-8 rounded-2xl bg-linear-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 border border-indigo-200/50 dark:border-indigo-900/50">
             <p className="text-gray-700 dark:text-gray-300 text-lg font-medium">
               No matter your background, Launchly makes deployment simple
             </p>
@@ -218,7 +218,7 @@ export default function TargetUsersSection() {
       </div>
 
       {/* Bottom Decorative Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent"></div>
     </section>
   );
 }

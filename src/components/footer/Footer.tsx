@@ -29,7 +29,7 @@ export default function Footer() {
     return (
         <footer className="font-poppins relative mt-0 overflow-hidden">
             {/* Animated Background Elements */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-blue-100/50 dark:from-transparent dark:via-blue-950/20 dark:to-blue-950/40" />
+            <div className="absolute inset-0 bg-linear-to-b from-transparent via-blue-50/30 to-blue-100/50 dark:from-transparent dark:via-blue-950/20 dark:to-blue-950/40" />
 
             {/* Floating Orbs */}
             <motion.div
@@ -40,7 +40,7 @@ export default function Footer() {
                     repeat: Infinity,
                     repeatType: "reverse",
                 }}
-                className="absolute left-0 bottom-0 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 blur-[120px] pointer-events-none"
+                className="absolute left-0 bottom-0 w-[500px] h-[500px] rounded-full bg-linear-to-r from-blue-500/20 to-indigo-500/20 blur-[120px] pointer-events-none"
             />
 
             <motion.div
@@ -52,11 +52,11 @@ export default function Footer() {
                     repeatType: "reverse",
                     delay: 1,
                 }}
-                className="absolute right-0 top-0 w-[400px] h-[400px] rounded-full bg-gradient-to-l from-purple-500/20 to-pink-500/20 blur-[100px] pointer-events-none"
+                className="absolute right-0 top-0 w-[400px] h-[400px] rounded-full bg-linear-to-l from-purple-500/20 to-pink-500/20 blur-[100px] pointer-events-none"
             />
 
             {/* Decorative Top Border */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent" />
 
             {/* Main Content */}
             <motion.div
@@ -70,10 +70,10 @@ export default function Footer() {
                     {/* Brand Section */}
                     <motion.div variants={itemVariants} className="lg:col-span-4">
                         <div className="group">
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-4 group-hover:scale-105 transition-transform duration-300 inline-block">
+                            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-4 group-hover:scale-105 transition-transform duration-300 inline-block">
                                 Launchly
                             </h2>
-                            <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-4" />
+                            <div className="h-1 w-20 bg-linear-to-r from-blue-500 to-purple-500 rounded-full mb-4" />
                         </div>
 
                         <p className="text-gray-600 dark:text-gray-300 leading-relaxed max-w-sm mb-6">
@@ -91,7 +91,7 @@ export default function Footer() {
                                     key={social.icon}
                                     href={social.href}
                                     target="_blank"
-                                    className="group relative w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-500 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                                    className="group relative w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-linear-to-br hover:from-blue-500 hover:to-purple-500 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                                     aria-label={social.label}
                                 >
                                     <span className="text-gray-600 dark:text-gray-300 group-hover:text-white transition-colors">
@@ -205,7 +205,7 @@ export default function Footer() {
                                 placeholder="your@email.com"
                                 className="flex-1 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                             />
-                            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium transition-all duration-300 hover:shadow-lg text-sm">
+                            <button className="px-4 py-2 rounded-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium transition-all duration-300 hover:shadow-lg text-sm">
                                 →
                             </button>
                         </div>

@@ -74,7 +74,7 @@ function useUserData(id: string | string[] | undefined) {
 export default function EditUserPage() {
     const { id } = useParams();
     const router = useRouter();
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const { data: initialData, loading, error: loadError } = useUserData(id);
 
@@ -258,11 +258,11 @@ export default function EditUserPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-40 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-40 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-6 py-6 sm:px-8">
+                    <div className="bg-linear-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-6 py-6 sm:px-8">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h1 className="text-3xl font-bold text-white">
@@ -301,7 +301,7 @@ export default function EditUserPage() {
                             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-r-lg">
                                 <div className="flex items-start">
                                     <svg
-                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5"
+                                        className="w-5 h-5 text-red-500 dark:text-red-400 mr-3 shrink-0 mt-0.5"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
