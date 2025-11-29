@@ -45,7 +45,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Main Heading */}
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
           Deploy Websites{" "}
           <span className="block mt-2 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
             Effortlessly
@@ -123,7 +123,7 @@ export default function HeroSection() {
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1 }}
         viewport={{ once: true }}
-        className="flex-1 flex justify-center md:justify-end relative mb-12 md:mb-0"
+        className="flex-1 flex justify-center md:justify-end relative mt-10 lg:mt-0"
       >
         <motion.div
           animate={floatingAnimation}

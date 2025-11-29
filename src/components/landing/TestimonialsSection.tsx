@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Image from "next/image";
@@ -33,7 +34,7 @@ export default function TestimonialsSection() {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial, index: any) => (
             <div
               key={index}
               onMouseEnter={() => setHoveredIndex(index)}

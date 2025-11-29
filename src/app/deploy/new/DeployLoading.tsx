@@ -73,7 +73,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                     className="w-full max-w-2xl rounded-3xl bg-linear-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700 p-8 shadow-2xl"
                 >
                     {/* Header */}
-                    <div className="text-center mb-8">
+                    <div className="text-center mb-6 sm:mb-8">
                         <motion.div
                             animate={{
                                 rotate: progress < 100 ? 360 : 0,
@@ -85,29 +85,29 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                             }}
                             className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 mb-4 shadow-lg shadow-indigo-500/30"
                         >
-                            <span className="text-4xl">
+                            <span className="text-3xl sm:text-4xl">
                                 {progress === 100 ? "🎉" : "🚀"}
                             </span>
                         </motion.div>
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                             {progress === 100 ? "Deployment Successful!" : "Deploying Your Project"}
                         </h2>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                             {projectName || "your-project"}
                         </p>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="mb-8">
+                    <div className="mb-6 sm:mb-8">
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Progress
                             </span>
-                            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                            <span className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">
                                 {Math.round(progress)}%
                             </span>
                         </div>
-                        <div className="relative w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div className="relative w-full h-2.5 sm:h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
@@ -124,7 +124,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                     </div>
 
                     {/* Steps */}
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                         {steps.map((step, index) => (
                             <motion.div
                                 key={index}
@@ -134,7 +134,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                     x: 0
                                 }}
                                 transition={{ delay: index * 0.1 }}
-                                className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                                className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition-all ${
                                     index === currentStep && progress < 100
                                         ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 shadow-lg shadow-indigo-500/20"
                                         : index < currentStep
@@ -147,7 +147,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                         <motion.span
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className="text-2xl"
+                                            className="text-xl sm:text-2xl"
                                         >
                                             ✓
                                         </motion.span>
@@ -155,8 +155,8 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                         step.icon
                                     )}
                                 </div>
-                                <div className="flex-1">
-                                    <p className={`font-semibold ${
+                                <div className="flex-1 min-w-0">
+                                    <p className={`font-semibold text-sm sm:text-base ${
                                         index === currentStep && progress < 100
                                             ? "text-indigo-700 dark:text-indigo-300"
                                             : index < currentStep
@@ -172,7 +172,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                         className="shrink-0"
                                     >
-                                        <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                         </svg>
@@ -184,7 +184,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                                         animate={{ scale: 1 }}
                                         className="shrink-0 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center"
                                     >
-                                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                     </motion.div>
@@ -200,7 +200,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
                             animate={{ opacity: 1, y: 0 }}
                             className="p-4 rounded-xl bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-300 dark:border-emerald-700 text-center"
                         >
-                            <p className="text-emerald-700 dark:text-emerald-300 font-semibold mb-2">
+                            <p className="text-emerald-700 dark:text-emerald-300 font-semibold mb-2 text-sm sm:text-base">
                                 🎊 Your project is now live!
                             </p>
                             <p className="text-xs text-emerald-600 dark:text-emerald-400">
@@ -211,7 +211,7 @@ export function DeploymentLoading({ isOpen, projectName, onClose } : { isOpen: a
 
                     {/* Floating Particles Animation */}
                     {progress < 100 && (
-                        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
+                        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl sm:rounded-3xl">
                             {[...Array(20)].map((_, i) => (
                                 <motion.div
                                     key={i}
