@@ -1,20 +1,32 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { STEPS } from "@/data/howItWorksItemData";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 },
+    transition: {
+      staggerChildren: 0.15,
+    },
   },
 };
 
-const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+const item: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
 };
 
 export default function HowItWorks() {
@@ -69,7 +81,8 @@ export default function HowItWorks() {
             How Launchly Works
           </h2>
           <p className="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            From repository to live URL in three simple steps. No configuration, no hassle.
+            From repository to live URL in three simple steps. No configuration,
+            no hassle.
           </p>
         </motion.div>
 
