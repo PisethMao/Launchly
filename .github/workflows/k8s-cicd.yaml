@@ -114,7 +114,7 @@ jobs:
           yq e '.image.tag = "'$IMAGE_TAG'"' -i helm/values.yaml
       - name: Update Kubernetes Deployment Image
         run: |
-          cd argocd-repo
+          cd launchly-project
           yq e '.spec.template.spec.containers[0].image = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME':'$IMAGE_TAG'"' -i k8s/deployment.yaml
       - name: Commit and Push Changes
         run: |
