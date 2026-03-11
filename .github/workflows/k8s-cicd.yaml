@@ -110,12 +110,12 @@ jobs:
       - name: Update Helm Chart
         run: |
           cd launchly-project
-          yq e '.image.repository = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME'"' -i helm/values.yaml
-          yq e '.image.tag = "'$IMAGE_TAG'"' -i helm/values.yaml
+          yq e '.image.repository = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME'"' -i values.yaml
+          yq e '.image.tag = "'$IMAGE_TAG'"' -i values.yaml
       - name: Update Kubernetes Deployment Image
         run: |
           cd launchly-project
-          yq e '.spec.template.spec.containers[0].image = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME':'$IMAGE_TAG'"' -i k8s/deployment.yaml
+          yq e '.spec.template.spec.containers[0].image = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME':'$IMAGE_TAG'"' -i templates/deployment.yaml
       - name: Commit and Push Changes
         run: |
           cd launchly-project
