@@ -1,0 +1,24 @@
+name: Launchly CI/CD Self Hosted
+on:
+  push:
+    branches:
+      - master3
+env:
+  DOCKER_IMAGE: pisethmao/launchly
+  IMAGE_TAG: ${{ github.sha }}
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Build Next.js application
+        run: npm run build
+      - name: Login to DockerHub
+        run: echo "${{ secrets.PASSWORD }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin
+      - name: Build Docker image
+        run: docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
+      - name: Push Docker image
+        run: docker push $DOCKER_IMAGE:$IMAGE_TAG
