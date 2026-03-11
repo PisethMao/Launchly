@@ -109,7 +109,7 @@ jobs:
           git clone https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/PisethMao/deploy-project-with-argocd.git argocd-repo
       - name: Update Helm Chart
         run: |
-          cd argocd-repo
+          cd launchly-project
           yq e '.image.repository = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME'"' -i helm/values.yaml
           yq e '.image.tag = "'$IMAGE_TAG'"' -i helm/values.yaml
       - name: Update Kubernetes Deployment Image
@@ -118,7 +118,7 @@ jobs:
           yq e '.spec.template.spec.containers[0].image = "'$DOCKER_USERNAME'/'$DOCKER_IMAGE_NAME':'$IMAGE_TAG'"' -i k8s/deployment.yaml
       - name: Commit and Push Changes
         run: |
-          cd argocd-repo
+          cd launchly-project
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
