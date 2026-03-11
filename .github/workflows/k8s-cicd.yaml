@@ -10,7 +10,6 @@ env:
   DOCKER_USERNAME: pisethmao
   DOCKER_IMAGE_NAME: real-devops-website
   IMAGE_TAG: ${{ github.sha }}
-  IMAGE: $DOCKER_USERNAME/$DOCKER_IMAGE_NAME
 jobs:
   ci-job:
     runs-on: ubuntu-latest
@@ -21,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Install dependencies
         run: npm install
       - name: Run build
@@ -29,7 +28,7 @@ jobs:
       - name: Show Image Information
         run: |
           echo "GitHub SHA: ${{ github.sha }}"
-          echo "Docker Image: $IMAGE"
+          echo "Docker Image: $DOCKER_USERNAME/$DOCKER_IMAGE_NAME"
           echo "Image Tag: $IMAGE_TAG"
       - name: Login to DockerHub
         if: github.event_name == 'push'
@@ -39,13 +38,13 @@ jobs:
           password: ${{ secrets.PASSWORD }}
       - name: Build Docker Image
         run: |
-          docker build -t $IMAGE:$IMAGE_TAG .
-          docker tag $IMAGE:$IMAGE_TAG $IMAGE:latest
+          docker build -t $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$IMAGE_TAG .
+          docker tag $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$IMAGE_TAG $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:latest
       - name: Push Docker Image
         if: github.event_name == 'push'
         run: |
-          docker push $IMAGE:$IMAGE_TAG
-          docker push $IMAGE:latest
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$IMAGE_TAG
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:latest
       - name: Logout From Dockerhub
         if: github.event_name == 'push'
         run: docker logout
