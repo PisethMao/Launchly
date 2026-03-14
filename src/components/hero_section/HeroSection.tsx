@@ -43,9 +43,9 @@ export default function HeroSection() {
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Skol Piseth Mao{" "}
+            nhom ah seth{" "}
             <span className="block mt-2 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
-              Ot?
+              jg lg men???
             </span>
           </h1>
 
